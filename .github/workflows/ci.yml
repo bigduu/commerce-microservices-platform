@@ -22,22 +22,39 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Build & test all services
+      - name: Build, test & coverage check
         run: |
-          ./mvnw clean test \
+          ./mvnw clean verify \
             -pl common,user-service,merchant-service,order-service,settlement-service \
             -am \
             --batch-mode \
             --no-transfer-progress
 
-      - name: Upload test results
+      - name: Print JaCoCo coverage summary
+        run: |
+          echo "## Coverage Summary" >> $GITHUB_STEP_SUMMARY
+          for m in common user-service merchant-service order-service settlement-service; do
+            csv="$m/target/site/jacoco/jacoco.csv"
+            if [ -f "$csv" ]; then
+              echo "**$m**" >> $GITHUB_STEP_SUMMARY
+              awk -F',' 'NR>1 {
+                missed=$4+$7; covered=$5+$8;
+                if (missed+covered > 0) {
+                  pct=covered/(missed+covered)*100;
+                  printf "  %-35s %5.1f%% (%d/%d)\n", $3, pct, covered, missed+covered
+                }
+              }' "$csv" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
+
+      - name: Upload JaCoCo reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: unit-test-results
+          name: coverage-reports
           path: |
+            */target/site/jacoco/
             */target/surefire-reports/*.xml
-            */target/site/jacoco/index.html
           retention-days: 7
 
   e2e-test:
