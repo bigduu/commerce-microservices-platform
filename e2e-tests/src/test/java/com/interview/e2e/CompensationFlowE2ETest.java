@@ -1,0 +1,124 @@
+package com.interview.e2e;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.interview.common.saga.SagaCommand;
+import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+class CompensationFlowE2ETest extends KafkaSagaFlowTestSupport {
+
+    @Test
+    void merchantCreditFailure_shouldPublishFailureEventAndCompensationCommands() throws Exception {
+        String sagaId = UUID.randomUUID().toString();
+        String orderId = UUID.randomUUID().toString();
+
+        String userCommandsTopic = randomTopic("user.commands");
+        String merchantCommandsTopic = randomTopic("merchant.commands");
+        String userEventsTopic = randomTopic("user.events");
+        String merchantEventsTopic = randomTopic("merchant.events");
+
+        SagaCommand<UnifiedSagaFixtures.DeductPaymentPayload> deduct = SagaCommand.of(
+                sagaId,
+                orderId,
+                "DeductPaymentCommand",
+                "user-service",
+                new UnifiedSagaFixtures.DeductPaymentPayload("usr-001", orderId, new BigDecimal("199.98")),
+                false
+        );
+        SagaCommand<UnifiedSagaFixtures.ReserveInventoryPayload> reserve = SagaCommand.of(
+                sagaId,
+                orderId,
+                "ReserveInventoryCommand",
+                "merchant-service",
+                new UnifiedSagaFixtures.ReserveInventoryPayload("SKU-001", orderId, 2),
+                false
+        );
+        SagaCommand<UnifiedSagaFixtures.CreditMerchantPayload> credit = SagaCommand.of(
+                sagaId,
+                orderId,
+                "CreditMerchantCommand",
+                "merchant-service",
+                new UnifiedSagaFixtures.CreditMerchantPayload("mrc-001", orderId, new BigDecimal("199.98")),
+                false
+        );
+        SagaCommand<UnifiedSagaFixtures.ReleaseInventoryPayload> release = SagaCommand.of(
+                sagaId,
+                orderId,
+                "ReleaseInventoryCommand",
+                "merchant-service",
+                new UnifiedSagaFixtures.ReleaseInventoryPayload("SKU-001", orderId, 2),
+                true
+        );
+        SagaCommand<UnifiedSagaFixtures.RefundPaymentPayload> refund = SagaCommand.of(
+                sagaId,
+                orderId,
+                "RefundPaymentCommand",
+                "user-service",
+                new UnifiedSagaFixtures.RefundPaymentPayload("usr-001", orderId, new BigDecimal("199.98")),
+                true
+        );
+
+        UnifiedSagaFixtures.PaymentDeducted paymentDeducted = new UnifiedSagaFixtures.PaymentDeducted(
+                "usr-001", orderId, new BigDecimal("199.98")
+        );
+        paymentDeducted.correlate(sagaId, deduct.commandId(), orderId);
+
+        UnifiedSagaFixtures.InventoryReserved inventoryReserved = new UnifiedSagaFixtures.InventoryReserved(
+                orderId, "SKU-001", 2
+        );
+        inventoryReserved.correlate(sagaId, reserve.commandId(), orderId);
+
+        UnifiedSagaFixtures.MerchantCreditFailed merchantCreditFailed = new UnifiedSagaFixtures.MerchantCreditFailed(
+                orderId, "mrc-001", new BigDecimal("199.98")
+        );
+        merchantCreditFailed.correlate(sagaId, credit.commandId(), orderId)
+                .fail("MERCHANT_CREDIT_FAILED", "credit failed");
+
+        publishMessages(userCommandsTopic, sagaId, List.of(deduct, refund));
+        publishMessages(merchantCommandsTopic, sagaId, List.of(reserve, credit, release));
+        publishMessage(userEventsTopic, sagaId, paymentDeducted);
+        publishMessages(merchantEventsTopic, sagaId, List.of(inventoryReserved, merchantCreditFailed));
+
+        List<JsonNode> userCommands = consumeMessages(userCommandsTopic, 2);
+        List<JsonNode> merchantCommands = consumeMessages(merchantCommandsTopic, 3);
+        List<JsonNode> userEvents = consumeMessages(userEventsTopic, 1);
+        List<JsonNode> merchantEvents = consumeMessages(merchantEventsTopic, 2);
+
+        assertThat(userCommands)
+                .extracting(node -> node.get("commandType").asText())
+                .containsExactly("DeductPaymentCommand", "RefundPaymentCommand");
+        assertThat(userCommands.get(0).get("compensation").asBoolean()).isFalse();
+        assertThat(userCommands.get(1).get("compensation").asBoolean()).isTrue();
+        assertThat(userCommands.get(1).get("sagaId").asText()).isEqualTo(sagaId);
+        assertThat(userCommands.get(1).path("payload").path("amount").decimalValue())
+                .isEqualByComparingTo(new BigDecimal("199.98"));
+
+        assertThat(merchantCommands)
+                .extracting(node -> node.get("commandType").asText())
+                .containsExactly("ReserveInventoryCommand", "CreditMerchantCommand", "ReleaseInventoryCommand");
+        assertThat(merchantCommands.get(0).get("compensation").asBoolean()).isFalse();
+        assertThat(merchantCommands.get(1).get("compensation").asBoolean()).isFalse();
+        assertThat(merchantCommands.get(2).get("compensation").asBoolean()).isTrue();
+        assertThat(merchantCommands.get(2).path("payload").path("sku").asText()).isEqualTo("SKU-001");
+
+        JsonNode paymentEventJson = userEvents.get(0);
+        assertThat(paymentEventJson.get("eventType").asText()).isEqualTo("PaymentDeducted");
+        assertThat(paymentEventJson.get("commandId").asText()).isEqualTo(deduct.commandId());
+        assertThat(paymentEventJson.get("sagaId").asText()).isEqualTo(sagaId);
+
+        assertThat(merchantEvents)
+                .extracting(node -> node.get("eventType").asText())
+                .containsExactly("InventoryReserved", "MerchantCreditFailed");
+        assertThat(merchantEvents.get(0).get("commandId").asText()).isEqualTo(reserve.commandId());
+        assertThat(merchantEvents.get(1).get("commandId").asText()).isEqualTo(credit.commandId());
+        assertThat(merchantEvents.get(1).get("sagaId").asText()).isEqualTo(sagaId);
+        assertThat(merchantEvents.get(1).get("failureCode").asText()).isEqualTo("MERCHANT_CREDIT_FAILED");
+        assertThat(merchantEvents.get(1).get("failureReason").asText()).isEqualTo("credit failed");
+        assertThat(merchantEvents.get(1).get("merchantId").asText()).isEqualTo("mrc-001");
+    }
+}

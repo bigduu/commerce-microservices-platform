@@ -1,0 +1,67 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+      httpclient:
+        connect-timeout: 2000
+        response-timeout: 5s
+        pool:
+          type: fixed
+          max-connections: 500
+          acquire-timeout: 3000
+      routes:
+        - id: user-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/v1/users/*/balance,/api/v1/users/*/topup,/api/v1/users
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: user-service
+                fallbackUri: forward:/fallback
+        - id: merchant-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/v1/merchants,/api/v1/merchants/*,/api/v1/merchants/*/balance,/api/v1/merchants/*/products,/api/v1/merchants/*/products/*,/api/v1/merchants/*/products/*/inventory
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: merchant-service
+                fallbackUri: forward:/fallback
+        - id: order-service-orders
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/v1/orders/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: order-service
+                fallbackUri: forward:/fallback
+        - id: order-service-user-orders
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/v1/users/*/orders
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: order-service-user
+                fallbackUri: forward:/fallback
+        - id: settlement-service
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/v1/merchants/*/settlements/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: settlement-service
+                fallbackUri: forward:/fallback
