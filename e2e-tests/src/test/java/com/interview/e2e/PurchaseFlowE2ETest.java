@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PurchaseFlowE2ETest extends KafkaSagaFlowTestSupport {
 
     @Test
-    void successfulSagaFlow_shouldPublishUnifiedCommandsAndCorrelatedEvents() throws Exception {
+    void shouldPublishCommandsAndCorrelatedEventsForSuccessfulSagaFlow() throws Exception {
         String sagaId = UUID.randomUUID().toString();
         String orderId = UUID.randomUUID().toString();
 

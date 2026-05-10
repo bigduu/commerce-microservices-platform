@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class CompensationFlowE2ETest extends KafkaSagaFlowTestSupport {
 
     @Test
-    void merchantCreditFailure_shouldPublishFailureEventAndCompensationCommands() throws Exception {
+    void shouldPublishFailureEventAndCompensationCommandsOnMerchantCreditFailure() throws Exception {
         String sagaId = UUID.randomUUID().toString();
         String orderId = UUID.randomUUID().toString();
 
@@ -123,7 +123,7 @@ class CompensationFlowE2ETest extends KafkaSagaFlowTestSupport {
     }
 
     @Test
-    void inventoryReserveFailure_shouldSendRefundPaymentCompensation() throws Exception {
+    void shouldSendRefundPaymentCompensationOnInventoryReserveFailure() throws Exception {
         String sagaId = UUID.randomUUID().toString();
         String orderId = UUID.randomUUID().toString();
 
@@ -188,7 +188,7 @@ class CompensationFlowE2ETest extends KafkaSagaFlowTestSupport {
     }
 
     @Test
-    void paymentDeductFailure_shouldFailFastWithoutCompensation() throws Exception {
+    void shouldFailFastWithoutCompensationOnPaymentDeductFailure() throws Exception {
         String sagaId = UUID.randomUUID().toString();
         String orderId = UUID.randomUUID().toString();
 

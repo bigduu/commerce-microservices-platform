@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class SagaResilienceE2ETest extends KafkaSagaFlowTestSupport {
 
     @Test
-    void duplicateCommandWithSameCommandId_shouldProduceIdenticalEnvelope() throws Exception {
+    void shouldProduceIdenticalEnvelopeForSameCommandId() throws Exception {
         String sagaId = UUID.randomUUID().toString();
         String orderId = UUID.randomUUID().toString();
         String commandId = UUID.randomUUID().toString();
@@ -45,7 +45,7 @@ class SagaResilienceE2ETest extends KafkaSagaFlowTestSupport {
     }
 
     @Test
-    void concurrentSagasWithDifferentIds_shouldNotInterfere() throws Exception {
+    void shouldNotInterfereBetweenConcurrentSagas() throws Exception {
         String sagaA = UUID.randomUUID().toString();
         String sagaB = UUID.randomUUID().toString();
         String orderA = UUID.randomUUID().toString();
@@ -83,12 +83,10 @@ class SagaResilienceE2ETest extends KafkaSagaFlowTestSupport {
         List<JsonNode> userCommands = consumeMessages(userCommandsTopic, 2);
         List<JsonNode> merchantCommands = consumeMessages(merchantCommandsTopic, 2);
 
-        List<String> userSagaIds = userCommands.stream()
-                .map(n -> n.get("sagaId").asText()).toList();
+        List<String> userSagaIds = userCommands.stream().map(n -> n.get("sagaId").asText()).toList();
         assertThat(userSagaIds).containsExactlyInAnyOrder(sagaA, sagaB);
 
-        List<String> userOrderIds = userCommands.stream()
-                .map(n -> n.get("orderId").asText()).toList();
+        List<String> userOrderIds = userCommands.stream().map(n -> n.get("orderId").asText()).toList();
         assertThat(userOrderIds).containsExactlyInAnyOrder(orderA, orderB);
 
         assertThat(merchantCommands)
@@ -100,7 +98,7 @@ class SagaResilienceE2ETest extends KafkaSagaFlowTestSupport {
     }
 
     @Test
-    void sagaCommand_shouldCarryAllRequiredCorrelationFields() throws Exception {
+    void shouldCarryAllRequiredCorrelationFields() throws Exception {
         String sagaId = UUID.randomUUID().toString();
         String orderId = UUID.randomUUID().toString();
 
@@ -128,7 +126,7 @@ class SagaResilienceE2ETest extends KafkaSagaFlowTestSupport {
     }
 
     @Test
-    void compensationCommand_shouldHaveCompensationFlagSet() throws Exception {
+    void shouldSetCompensationFlagOnRefundCommands() throws Exception {
         String sagaId = UUID.randomUUID().toString();
         String orderId = UUID.randomUUID().toString();
 
@@ -153,7 +151,7 @@ class SagaResilienceE2ETest extends KafkaSagaFlowTestSupport {
     }
 
     @Test
-    void outboxMessage_shouldContainTopicAggregateTypeAndPayload() throws Exception {
+    void shouldHaveCorrectOutboxMessageStructure() throws Exception {
         String sagaId = UUID.randomUUID().toString();
         String orderId = UUID.randomUUID().toString();
         String eventId = UUID.randomUUID().toString();
@@ -182,7 +180,7 @@ class SagaResilienceE2ETest extends KafkaSagaFlowTestSupport {
     }
 
     @Test
-    void fullCompensationWithReleaseAndRefund_shouldHaveCorrectCompensationFlags() throws Exception {
+    void shouldHaveCorrectCompensationFlagsInFullRollback() throws Exception {
         String sagaId = UUID.randomUUID().toString();
         String orderId = UUID.randomUUID().toString();
 
@@ -223,11 +221,9 @@ class SagaResilienceE2ETest extends KafkaSagaFlowTestSupport {
 
         assertThat(userCommands.get(0).get("compensation").asBoolean()).isFalse();
         assertThat(userCommands.get(1).get("compensation").asBoolean()).isTrue();
-
         assertThat(merchantCommands.get(0).get("compensation").asBoolean()).isFalse();
         assertThat(merchantCommands.get(1).get("compensation").asBoolean()).isFalse();
         assertThat(merchantCommands.get(2).get("compensation").asBoolean()).isTrue();
-
         assertThat(merchantCommands.get(0).get("commandType").asText()).isEqualTo("ReserveInventoryCommand");
         assertThat(merchantCommands.get(1).get("commandType").asText()).isEqualTo("CreditMerchantCommand");
         assertThat(merchantCommands.get(2).get("commandType").asText()).isEqualTo("ReleaseInventoryCommand");

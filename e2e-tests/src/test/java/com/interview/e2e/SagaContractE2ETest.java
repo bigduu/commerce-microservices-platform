@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class SagaContractE2ETest {
 
     @Test
-    void sagaCommand_shouldSerializeUnifiedEnvelope() throws Exception {
+    void shouldSerializeSagaCommandToUnifiedEnvelope() throws Exception {
         String sagaId = UUID.randomUUID().toString();
         String orderId = UUID.randomUUID().toString();
 
@@ -44,7 +44,7 @@ class SagaContractE2ETest {
     }
 
     @Test
-    void domainEvent_shouldCarryCorrelationAndFailureMetadata() throws Exception {
+    void shouldCarryCorrelationAndFailureMetadataOnDomainEvents() throws Exception {
         String sagaId = UUID.randomUUID().toString();
         String orderId = UUID.randomUUID().toString();
         String commandId = UUID.randomUUID().toString();
@@ -74,7 +74,7 @@ class SagaContractE2ETest {
     }
 
     @Test
-    void successAndCompensationSequences_shouldUseUnifiedEnvelope() {
+    void shouldUseUnifiedEnvelopeForSuccessAndCompensationSequences() {
         String sagaId = UUID.randomUUID().toString();
         String orderId = UUID.randomUUID().toString();
 
