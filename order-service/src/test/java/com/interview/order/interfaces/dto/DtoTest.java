@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class DtoTest {
 
     @Test
-    void createOrderRequest_recordHasCorrectValues() {
+    void createOrderRequestRecordHasCorrectValues() {
         CreateOrderRequest request = new CreateOrderRequest(
                 "user-1", "merchant-1", "SKU-001", 2
         );
@@ -25,7 +25,7 @@ class DtoTest {
     }
 
     @Test
-    void orderResponse_fromOrder_mapsCorrectly() {
+    void orderResponseFromOrderMapsCorrectly() {
         Instant now = Instant.now();
         Order order = new Order("order-1", "user-1", "merchant-1", "SKU-001", 3, new BigDecimal("5.00"));
         order.setStatus(OrderStatus.PENDING);
@@ -47,7 +47,7 @@ class DtoTest {
     }
 
     @Test
-    void orderResponse_recordHasCorrectValues() {
+    void orderResponseRecordHasCorrectValues() {
         Instant now = Instant.now();
         OrderResponse response = new OrderResponse(
                 "order-2", "user-2", "merchant-2", "SKU-002",

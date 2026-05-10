@@ -57,7 +57,7 @@ class MerchantKafkaConsumerTest {
     }
 
     @Test
-    void handleCommand_reserveInventory_success() throws Exception {
+    void handleCommandReserveInventorySuccess() throws Exception {
         String payload = serializeCommand(
                 "cmd-1",
                 "saga-1",
@@ -80,7 +80,7 @@ class MerchantKafkaConsumerTest {
     }
 
     @Test
-    void handleCommand_reserveInventory_insufficientInventory() throws Exception {
+    void handleCommandReserveInventoryInsufficientInventory() throws Exception {
         String payload = serializeCommand(
                 "cmd-2",
                 "saga-2",
@@ -105,7 +105,7 @@ class MerchantKafkaConsumerTest {
     }
 
     @Test
-    void handleCommand_releaseInventory_success() throws Exception {
+    void handleCommandReleaseInventorySuccess() throws Exception {
         String payload = serializeCommand(
                 "cmd-3",
                 "saga-3",
@@ -127,7 +127,7 @@ class MerchantKafkaConsumerTest {
     }
 
     @Test
-    void handleCommand_creditMerchant_success() throws Exception {
+    void handleCommandCreditMerchantSuccess() throws Exception {
         String payload = serializeCommand(
                 "cmd-4",
                 "saga-4",
@@ -149,7 +149,7 @@ class MerchantKafkaConsumerTest {
     }
 
     @Test
-    void handleCommand_creditMerchant_failure_shouldPublishFailureEventAndNotAck() throws Exception {
+    void handleCommandCreditMerchantFailureShouldPublishFailureEventAndNotAck() throws Exception {
         String payload = serializeCommand(
                 "cmd-5",
                 "saga-5",
@@ -172,7 +172,7 @@ class MerchantKafkaConsumerTest {
     }
 
     @Test
-    void handleCommand_debitMerchant_success() throws Exception {
+    void handleCommandDebitMerchantSuccess() throws Exception {
         String payload = serializeCommand(
                 "cmd-6",
                 "saga-6",
@@ -193,7 +193,7 @@ class MerchantKafkaConsumerTest {
     }
 
     @Test
-    void handleCommand_unknownCommand_logsWarning() throws Exception {
+    void handleCommandUnknownCommandLogsWarning() throws Exception {
         String payload = serializeCommand(
                 "cmd-7",
                 "saga-7",
@@ -209,7 +209,7 @@ class MerchantKafkaConsumerTest {
     }
 
     @Test
-    void handleCommand_duplicateCommand_shouldSkip() throws Exception {
+    void handleCommandDuplicateCommandShouldSkip() throws Exception {
         String payload = serializeCommand(
                 "cmd-dup",
                 "saga-dup",
@@ -227,7 +227,7 @@ class MerchantKafkaConsumerTest {
     }
 
     @Test
-    void handleCommand_releaseInventory_failure_shouldPublishFailureEventAndNotAck() throws Exception {
+    void handleCommandReleaseInventoryFailureShouldPublishFailureEventAndNotAck() throws Exception {
         String payload = serializeCommand(
                 "cmd-release-fail",
                 "saga-rf",
@@ -250,7 +250,7 @@ class MerchantKafkaConsumerTest {
     }
 
     @Test
-    void handleCommand_debitMerchant_failure_shouldPublishFailureEventAndNotAck() throws Exception {
+    void handleCommandDebitMerchantFailureShouldPublishFailureEventAndNotAck() throws Exception {
         String payload = serializeCommand(
                 "cmd-debit-fail",
                 "saga-df",
@@ -273,7 +273,7 @@ class MerchantKafkaConsumerTest {
     }
 
     @Test
-    void handleCommand_blankCommandType_shouldReturn() throws Exception {
+    void handleCommandBlankCommandTypeShouldReturn() throws Exception {
         String payload = serializeCommand(
                 "cmd-blank",
                 "saga-blank",
@@ -289,7 +289,7 @@ class MerchantKafkaConsumerTest {
     }
 
     @Test
-    void handleCommand_nullCommandType_shouldReturn() throws Exception {
+    void handleCommandNullCommandTypeShouldReturn() throws Exception {
         String payload = serializeCommand(
                 "cmd-null",
                 "saga-null",

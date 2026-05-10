@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ProductTest {
 
     @Test
-    void create_shouldSetAllFieldsCorrectly() {
+    void createShouldSetAllFieldsCorrectly() {
         Product product = Product.create("SKU-001", "M001", "Test Product", new BigDecimal("19.99"), 100);
 
         assertEquals("SKU-001", product.getSku());
@@ -21,7 +21,7 @@ class ProductTest {
     }
 
     @Test
-    void addInventory_withValidQty_shouldIncreaseQuantity() {
+    void addInventoryWithValidQtyShouldIncreaseQuantity() {
         Product product = Product.create("SKU-002", "M002", "Widget", new BigDecimal("9.99"), 10);
 
         product.addInventory(5);
@@ -30,7 +30,7 @@ class ProductTest {
     }
 
     @Test
-    void addInventory_withZeroQty_shouldThrowIllegalArgumentException() {
+    void addInventoryWithZeroQtyShouldThrowIllegalArgumentException() {
         Product product = Product.create("SKU-003", "M003", "Gadget", new BigDecimal("29.99"), 20);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> product.addInventory(0));
@@ -38,7 +38,7 @@ class ProductTest {
     }
 
     @Test
-    void addInventory_withNegativeQty_shouldThrowIllegalArgumentException() {
+    void addInventoryWithNegativeQtyShouldThrowIllegalArgumentException() {
         Product product = Product.create("SKU-004", "M004", "Thing", new BigDecimal("5.00"), 30);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> product.addInventory(-5));
@@ -46,7 +46,7 @@ class ProductTest {
     }
 
     @Test
-    void deductInventory_withValidQty_shouldDecreaseQuantity() {
+    void deductInventoryWithValidQtyShouldDecreaseQuantity() {
         Product product = Product.create("SKU-005", "M005", "Item", new BigDecimal("15.00"), 50);
 
         product.deductInventory(20);
@@ -55,7 +55,7 @@ class ProductTest {
     }
 
     @Test
-    void deductInventory_withQtyGreaterThanQuantity_shouldThrowInsufficientInventoryException() {
+    void deductInventoryWithQtyGreaterThanQuantityShouldThrowInsufficientInventoryException() {
         Product product = Product.create("SKU-006", "M006", "Item", new BigDecimal("15.00"), 10);
 
         InsufficientInventoryException exception = assertThrows(
@@ -66,7 +66,7 @@ class ProductTest {
     }
 
     @Test
-    void deductInventory_toZero_shouldWorkCorrectly() {
+    void deductInventoryToZeroShouldWorkCorrectly() {
         Product product = Product.create("SKU-007", "M007", "Item", new BigDecimal("15.00"), 5);
 
         product.deductInventory(5);
@@ -75,7 +75,7 @@ class ProductTest {
     }
 
     @Test
-    void getVersion_shouldReturnNullForNewProduct() {
+    void getVersionShouldReturnNullForNewProduct() {
         Product product = Product.create("SKU-008", "M008", "Item", new BigDecimal("15.00"), 5);
 
         assertNull(product.getVersion());

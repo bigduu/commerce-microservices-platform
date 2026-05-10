@@ -26,7 +26,7 @@ class MerchantServiceTest {
     private MerchantService merchantService;
 
     @Test
-    void createMerchant_shouldSaveAndReturnNewAccount() {
+    void createMerchantShouldSaveAndReturnNewAccount() {
         MerchantAccount account = new MerchantAccount("M001", "Acme Corp");
         when(merchantAccountRepository.save(any(MerchantAccount.class))).thenReturn(account);
 
@@ -39,7 +39,7 @@ class MerchantServiceTest {
     }
 
     @Test
-    void getMerchant_whenFound_shouldReturnAccount() {
+    void getMerchantWhenFoundShouldReturnAccount() {
         MerchantAccount account = new MerchantAccount("M002", "Test Merchant");
         when(merchantAccountRepository.findById("M002")).thenReturn(Optional.of(account));
 
@@ -52,7 +52,7 @@ class MerchantServiceTest {
     }
 
     @Test
-    void getMerchant_whenNotFound_shouldThrowAggregateNotFoundException() {
+    void getMerchantWhenNotFoundShouldThrowAggregateNotFoundException() {
         when(merchantAccountRepository.findById("M999")).thenReturn(Optional.empty());
 
         AggregateNotFoundException exception = assertThrows(
@@ -64,7 +64,7 @@ class MerchantServiceTest {
     }
 
     @Test
-    void getBalance_shouldReturnBalance() {
+    void getBalanceShouldReturnBalance() {
         MerchantAccount account = new MerchantAccount("M003", "Test Merchant");
         account.credit(new BigDecimal("500.00"));
         when(merchantAccountRepository.findById("M003")).thenReturn(Optional.of(account));
@@ -76,7 +76,7 @@ class MerchantServiceTest {
     }
 
     @Test
-    void creditMerchant_shouldAddAmountToBalance() {
+    void creditMerchantShouldAddAmountToBalance() {
         MerchantAccount account = new MerchantAccount("M004", "Test Merchant");
         account.credit(new BigDecimal("100.00"));
         when(merchantAccountRepository.findById("M004")).thenReturn(Optional.of(account));
@@ -90,7 +90,7 @@ class MerchantServiceTest {
     }
 
     @Test
-    void debitMerchant_shouldSubtractAmountFromBalance() {
+    void debitMerchantShouldSubtractAmountFromBalance() {
         MerchantAccount account = new MerchantAccount("M005", "Test Merchant");
         account.credit(new BigDecimal("200.00"));
         when(merchantAccountRepository.findById("M005")).thenReturn(Optional.of(account));
@@ -104,7 +104,7 @@ class MerchantServiceTest {
     }
 
     @Test
-    void getBalance_whenMerchantNotFound_shouldThrowAggregateNotFoundException() {
+    void getBalanceWhenMerchantNotFoundShouldThrowAggregateNotFoundException() {
         when(merchantAccountRepository.findById("M999")).thenReturn(Optional.empty());
 
         AggregateNotFoundException exception = assertThrows(
@@ -115,7 +115,7 @@ class MerchantServiceTest {
     }
 
     @Test
-    void creditMerchant_whenMerchantNotFound_shouldThrowAggregateNotFoundException() {
+    void creditMerchantWhenMerchantNotFoundShouldThrowAggregateNotFoundException() {
         when(merchantAccountRepository.findById("M999")).thenReturn(Optional.empty());
 
         AggregateNotFoundException exception = assertThrows(
@@ -126,7 +126,7 @@ class MerchantServiceTest {
     }
 
     @Test
-    void debitMerchant_whenMerchantNotFound_shouldThrowAggregateNotFoundException() {
+    void debitMerchantWhenMerchantNotFoundShouldThrowAggregateNotFoundException() {
         when(merchantAccountRepository.findById("M999")).thenReturn(Optional.empty());
 
         AggregateNotFoundException exception = assertThrows(

@@ -15,7 +15,7 @@ class GlobalExceptionHandlerTest {
     private final GlobalExceptionHandler handler = new GlobalExceptionHandler();
 
     @Test
-    void handleInsufficientBalance_shouldReturn400() {
+    void handleInsufficientBalanceShouldReturn400() {
         InsufficientBalanceException ex = new InsufficientBalanceException("Balance too low");
 
         ResponseEntity<Map<String, Object>> response = handler.handleInsufficientBalance(ex);
@@ -28,7 +28,7 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void handleAggregateNotFound_shouldReturn404() {
+    void handleAggregateNotFoundShouldReturn404() {
         AggregateNotFoundException ex = new AggregateNotFoundException("user-123");
 
         ResponseEntity<Map<String, Object>> response = handler.handleAggregateNotFound(ex);
@@ -41,7 +41,7 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void handleIllegalArgument_shouldReturn400() {
+    void handleIllegalArgumentShouldReturn400() {
         IllegalArgumentException ex = new IllegalArgumentException("Invalid input");
 
         ResponseEntity<Map<String, Object>> response = handler.handleIllegalArgument(ex);
@@ -54,7 +54,7 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void handleGeneric_shouldReturn500() {
+    void handleGenericShouldReturn500() {
         Exception ex = new RuntimeException("Something went wrong");
 
         ResponseEntity<Map<String, Object>> response = handler.handleGeneric(ex);

@@ -33,7 +33,7 @@ class SagaTimeoutJobTest {
     }
 
     @Test
-    void scanTimeoutSagas_shouldDelegateTimedOutRunningAndCompensatingSagas() {
+    void scanTimeoutSagasShouldDelegateTimedOutRunningAndCompensatingSagas() {
         Instant timeout = Instant.now().minusSeconds(5);
         SagaInstance running = new SagaInstance("saga-running", "order-1", SagaStep.RESERVE_INVENTORY, SagaStatus.RUNNING, "[]", timeout);
         SagaInstance compensating = new SagaInstance("saga-comp", "order-2", SagaStep.CREDIT_MERCHANT, SagaStatus.COMPENSATING, "[]", timeout);

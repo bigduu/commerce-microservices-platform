@@ -39,7 +39,7 @@ class UserControllerTest {
     }
 
     @Test
-    void createUser_shouldReturn201AndUserResponse() throws Exception {
+    void createUserShouldReturn201AndUserResponse() throws Exception {
         String userId = "user-1";
         String username = "alice";
         UserAccount account = UserAccount.create(userId, username);
@@ -56,7 +56,7 @@ class UserControllerTest {
     }
 
     @Test
-    void getUser_shouldReturn200AndUserResponse() throws Exception {
+    void getUserShouldReturn200AndUserResponse() throws Exception {
         String userId = "user-1";
         UserAccount account = UserAccount.create(userId, "alice");
         account.topUp(Money.of(100.00));
@@ -71,7 +71,7 @@ class UserControllerTest {
     }
 
     @Test
-    void topUp_shouldReturn200() throws Exception {
+    void topUpShouldReturn200() throws Exception {
         String userId = "user-1";
         BigDecimal amount = new BigDecimal("50.00");
 
@@ -82,7 +82,7 @@ class UserControllerTest {
     }
 
     @Test
-    void getBalance_shouldReturn200AndBalanceResponse() throws Exception {
+    void getBalanceShouldReturn200AndBalanceResponse() throws Exception {
         String userId = "user-1";
         BigDecimal balance = new BigDecimal("150.00");
 

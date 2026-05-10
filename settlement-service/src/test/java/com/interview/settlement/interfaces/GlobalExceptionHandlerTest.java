@@ -19,7 +19,7 @@ class GlobalExceptionHandlerTest {
     private GlobalExceptionHandler handler;
 
     @Test
-    void handleGenericException_returns500WithErrorDetails() {
+    void handleGenericExceptionReturns500WithErrorDetails() {
         Exception ex = new RuntimeException("Unexpected system error");
 
         ResponseEntity<Map<String, Object>> response = handler.handleGenericException(ex);

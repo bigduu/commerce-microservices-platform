@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserAccountTest {
 
     @Test
-    void createUserAccount_shouldProduceAccountCreatedEvent() {
+    void createUserAccountShouldProduceAccountCreatedEvent() {
         UserAccount account = UserAccount.create("user-1", "alice");
 
         assertEquals("user-1", account.getUserId());
@@ -29,7 +29,7 @@ class UserAccountTest {
     }
 
     @Test
-    void topUp_shouldIncreaseBalance() {
+    void topUpShouldIncreaseBalance() {
         UserAccount account = UserAccount.create("user-1", "alice");
         account.clearPendingEvents();
 
@@ -44,13 +44,13 @@ class UserAccountTest {
     }
 
     @Test
-    void topUp_withZeroAmount_shouldThrow() {
+    void topUpWithZeroAmountShouldThrow() {
         UserAccount account = UserAccount.create("user-1", "alice");
         assertThrows(IllegalArgumentException.class, () -> account.topUp(Money.zero()));
     }
 
     @Test
-    void deductPayment_shouldDecreaseBalance() {
+    void deductPaymentShouldDecreaseBalance() {
         UserAccount account = UserAccount.create("user-1", "alice");
         account.topUp(Money.of(100.00));
         account.clearPendingEvents();
@@ -67,7 +67,7 @@ class UserAccountTest {
     }
 
     @Test
-    void deductPayment_withInsufficientBalance_shouldThrow() {
+    void deductPaymentWithInsufficientBalanceShouldThrow() {
         UserAccount account = UserAccount.create("user-1", "alice");
         account.topUp(Money.of(10.00));
         account.clearPendingEvents();
@@ -77,7 +77,7 @@ class UserAccountTest {
     }
 
     @Test
-    void refundPayment_shouldIncreaseBalance() {
+    void refundPaymentShouldIncreaseBalance() {
         UserAccount account = UserAccount.create("user-1", "alice");
         account.topUp(Money.of(100.00));
         account.deductPayment("order-1", Money.of(30.00));
@@ -95,7 +95,7 @@ class UserAccountTest {
     }
 
     @Test
-    void replay_shouldReconstructStateFromEvents() {
+    void replayShouldReconstructStateFromEvents() {
         UserAccount account = UserAccount.create("user-1", "alice");
         account.topUp(Money.of(100.00));
         account.deductPayment("order-1", Money.of(30.00));
@@ -111,7 +111,7 @@ class UserAccountTest {
     }
 
     @Test
-    void replay_withRefundEvent_shouldReconstructCorrectly() {
+    void replayWithRefundEventShouldReconstructCorrectly() {
         UserAccount account = UserAccount.create("user-1", "alice");
         account.topUp(Money.of(100.00));
         account.deductPayment("order-1", Money.of(30.00));
@@ -126,39 +126,39 @@ class UserAccountTest {
     }
 
     @Test
-    void topUp_withNullAmount_shouldThrow() {
+    void topUpWithNullAmountShouldThrow() {
         UserAccount account = UserAccount.create("user-1", "alice");
         assertThrows(IllegalArgumentException.class, () -> account.topUp(null));
     }
 
     @Test
-    void deductPayment_withNullAmount_shouldThrow() {
+    void deductPaymentWithNullAmountShouldThrow() {
         UserAccount account = UserAccount.create("user-1", "alice");
         account.topUp(Money.of(100.00));
         assertThrows(IllegalArgumentException.class, () -> account.deductPayment("order-1", null));
     }
 
     @Test
-    void deductPayment_withZeroAmount_shouldThrow() {
+    void deductPaymentWithZeroAmountShouldThrow() {
         UserAccount account = UserAccount.create("user-1", "alice");
         account.topUp(Money.of(100.00));
         assertThrows(IllegalArgumentException.class, () -> account.deductPayment("order-1", Money.zero()));
     }
 
     @Test
-    void refundPayment_withNullAmount_shouldThrow() {
+    void refundPaymentWithNullAmountShouldThrow() {
         UserAccount account = UserAccount.create("user-1", "alice");
         assertThrows(IllegalArgumentException.class, () -> account.refundPayment("order-1", null));
     }
 
     @Test
-    void refundPayment_withZeroAmount_shouldThrow() {
+    void refundPaymentWithZeroAmountShouldThrow() {
         UserAccount account = UserAccount.create("user-1", "alice");
         assertThrows(IllegalArgumentException.class, () -> account.refundPayment("order-1", Money.zero()));
     }
 
     @Test
-    void replay_withUnknownEvent_shouldThrow() {
+    void replayWithUnknownEventShouldThrow() {
         DomainEvent unknownEvent = new DomainEvent("user-1", "UserAccount") {};
         List<DomainEvent> events = List.of(unknownEvent);
 
@@ -167,7 +167,7 @@ class UserAccountTest {
     }
 
     @Test
-    void paymentRefundFailedEvent_shouldHaveAllFields() {
+    void paymentRefundFailedEventShouldHaveAllFields() {
         UserAccountEvents.PaymentRefundFailed event = new UserAccountEvents.PaymentRefundFailed(
                 "user-1", "order-1", new BigDecimal("50.00"));
 
@@ -178,7 +178,7 @@ class UserAccountTest {
     }
 
     @Test
-    void paymentDeductFailedEvent_shouldHaveAllFields() {
+    void paymentDeductFailedEventShouldHaveAllFields() {
         UserAccountEvents.PaymentDeductFailed event = new UserAccountEvents.PaymentDeductFailed(
                 "user-1", "order-1", new BigDecimal("100.00"));
         event.fail("INSUFFICIENT_BALANCE", "Not enough");

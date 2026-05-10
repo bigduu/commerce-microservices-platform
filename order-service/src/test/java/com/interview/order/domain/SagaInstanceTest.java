@@ -13,7 +13,7 @@ class SagaInstanceTest {
     private static final String ORDER_ID = "order-1";
 
     @Test
-    void constructor_shouldSetAllFields() {
+    void constructorShouldSetAllFields() {
         Instant timeoutAt = Instant.now().plusSeconds(300);
 
         SagaInstance saga = new SagaInstance(
@@ -29,13 +29,13 @@ class SagaInstanceTest {
     }
 
     @Test
-    void defaultConstructor_shouldCreateInstance() {
+    void defaultConstructorShouldCreateInstance() {
         SagaInstance saga = new SagaInstance();
         assertNotNull(saga);
     }
 
     @Test
-    void settersAndGetters_shouldWork() {
+    void settersAndGettersShouldWork() {
         SagaInstance saga = new SagaInstance();
         Instant now = Instant.now();
 
@@ -59,7 +59,7 @@ class SagaInstanceTest {
     }
 
     @Test
-    void prePersist_shouldSetCreatedAtAndUpdatedAt() {
+    void prePersistShouldSetCreatedAtAndUpdatedAt() {
         SagaInstance saga = new SagaInstance(
                 SAGA_ID, ORDER_ID, SagaStep.DEDUCT_PAYMENT, SagaStatus.RUNNING, "[]",
                 Instant.now().plusSeconds(300)
@@ -73,7 +73,7 @@ class SagaInstanceTest {
     }
 
     @Test
-    void preUpdate_shouldUpdateUpdatedAt() throws InterruptedException {
+    void preUpdateShouldUpdateUpdatedAt() throws InterruptedException {
         SagaInstance saga = new SagaInstance(
                 SAGA_ID, ORDER_ID, SagaStep.DEDUCT_PAYMENT, SagaStatus.RUNNING, "[]",
                 Instant.now().plusSeconds(300)

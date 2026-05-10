@@ -41,7 +41,7 @@ class RestMerchantProductClientTest {
     }
 
     @Test
-    void getUnitPrice_shouldReturnPrice_whenProductExists() throws Exception {
+    void getUnitPriceShouldReturnPriceWhenProductExists() throws Exception {
         String json = objectMapper.writeValueAsString(java.util.Map.of(
                 "sku", "SKU-001",
                 "merchantId", "M001",
@@ -65,7 +65,7 @@ class RestMerchantProductClientTest {
     }
 
     @Test
-    void getUnitPrice_shouldThrow_whenServerReturns404() {
+    void getUnitPriceShouldThrowWhenServerReturns404() {
         server.createContext("/api/v1/merchants/M001/products/SKU-999", exchange -> {
             exchange.sendResponseHeaders(404, -1);
             exchange.close();
@@ -77,7 +77,7 @@ class RestMerchantProductClientTest {
     }
 
     @Test
-    void getUnitPrice_shouldThrow_whenProductHasNullPrice() throws Exception {
+    void getUnitPriceShouldThrowWhenProductHasNullPrice() throws Exception {
         String json = "{\"sku\":\"SKU-001\",\"merchantId\":\"M001\",\"name\":\"Widget\",\"price\":null,\"quantity\":10}";
 
         server.createContext("/api/v1/merchants/M001/products/SKU-001", exchange -> {
@@ -95,7 +95,7 @@ class RestMerchantProductClientTest {
     }
 
     @Test
-    void getUnitPrice_shouldThrow_whenProductHasZeroPrice() throws Exception {
+    void getUnitPriceShouldThrowWhenProductHasZeroPrice() throws Exception {
         String json = objectMapper.writeValueAsString(java.util.Map.of(
                 "sku", "SKU-001",
                 "merchantId", "M001",
@@ -119,7 +119,7 @@ class RestMerchantProductClientTest {
     }
 
     @Test
-    void getUnitPrice_shouldThrow_whenProductHasNegativePrice() throws Exception {
+    void getUnitPriceShouldThrowWhenProductHasNegativePrice() throws Exception {
         String json = objectMapper.writeValueAsString(java.util.Map.of(
                 "sku", "SKU-001",
                 "merchantId", "M001",
@@ -143,7 +143,7 @@ class RestMerchantProductClientTest {
     }
 
     @Test
-    void getUnitPrice_shouldUseCacheOnSecondCall() throws Exception {
+    void getUnitPriceShouldUseCacheOnSecondCall() throws Exception {
         String json = objectMapper.writeValueAsString(java.util.Map.of(
                 "sku", "SKU-CACHE",
                 "merchantId", "M001",
@@ -173,7 +173,7 @@ class RestMerchantProductClientTest {
     }
 
     @Test
-    void getUnitPrice_shouldThrow_whenServerReturns500() {
+    void getUnitPriceShouldThrowWhenServerReturns500() {
         server.createContext("/api/v1/merchants/M001/products/SKU-500", exchange -> {
             exchange.sendResponseHeaders(500, -1);
             exchange.close();

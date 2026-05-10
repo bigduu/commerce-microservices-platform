@@ -203,7 +203,7 @@ class KafkaEventFlowE2ETest {
     }
 
     @Test
-    void outboxPatternWorksCorrectly_writeToDbThenPublishToKafka() throws Exception {
+    void outboxPatternWorksCorrectlyWriteToDbThenPublishToKafka() throws Exception {
         String bootstrapServers = kafka.getBootstrapServers();
         String topic = "outbox-events";
 

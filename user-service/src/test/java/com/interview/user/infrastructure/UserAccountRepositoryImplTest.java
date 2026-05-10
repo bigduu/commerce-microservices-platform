@@ -37,7 +37,7 @@ class UserAccountRepositoryImplTest {
     private UserAccountRepositoryImpl userAccountRepository;
 
     @Test
-    void findById_shouldLoadEventsAndReconstructAggregate() {
+    void findByIdShouldLoadEventsAndReconstructAggregate() {
         String userId = "user-1";
         UserAccountEvents.AccountCreated event = new UserAccountEvents.AccountCreated(userId, "alice");
         event.setVersion(1L);
@@ -53,7 +53,7 @@ class UserAccountRepositoryImplTest {
     }
 
     @Test
-    void findById_shouldThrowAggregateNotFoundWhenNoEvents() {
+    void findByIdShouldThrowAggregateNotFoundWhenNoEvents() {
         String userId = "user-1";
 
         when(eventStoreRepository.loadEvents(userId)).thenReturn(Collections.emptyList());
@@ -65,7 +65,7 @@ class UserAccountRepositoryImplTest {
     }
 
     @Test
-    void save_shouldDelegateToEventStoreAndSaveOutboxMessages() {
+    void saveShouldDelegateToEventStoreAndSaveOutboxMessages() {
         UserAccount account = UserAccount.create("user-1", "alice");
         account.topUp(Money.of(100.00));
 
@@ -77,7 +77,7 @@ class UserAccountRepositoryImplTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    void save_shouldCreateCorrectOutboxMessage() {
+    void saveShouldCreateCorrectOutboxMessage() {
         UserAccount account = UserAccount.create("user-1", "alice");
 
         userAccountRepository.save(account);
@@ -96,7 +96,7 @@ class UserAccountRepositoryImplTest {
     }
 
     @Test
-    void existsById_shouldReturnTrueWhenEventsExist() {
+    void existsByIdShouldReturnTrueWhenEventsExist() {
         String userId = "user-1";
         UserAccountEvents.AccountCreated event = new UserAccountEvents.AccountCreated(userId, "alice");
 
@@ -108,7 +108,7 @@ class UserAccountRepositoryImplTest {
     }
 
     @Test
-    void existsById_shouldReturnFalseWhenNoEvents() {
+    void existsByIdShouldReturnFalseWhenNoEvents() {
         String userId = "user-1";
 
         when(eventStoreRepository.loadEvents(userId)).thenReturn(Collections.emptyList());
@@ -119,7 +119,7 @@ class UserAccountRepositoryImplTest {
     }
 
     @Test
-    void existsById_shouldReturnFalseOnException() {
+    void existsByIdShouldReturnFalseOnException() {
         String userId = "user-1";
 
         when(eventStoreRepository.loadEvents(userId)).thenThrow(new RuntimeException("DB error"));

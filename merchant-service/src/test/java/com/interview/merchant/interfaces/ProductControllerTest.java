@@ -101,7 +101,7 @@ class ProductControllerTest {
     }
 
     @Test
-    void getProductBySku_whenMerchantMismatch_returns400() throws Exception {
+    void getProductBySkuWhenMerchantMismatchReturns400() throws Exception {
         when(productService.getProduct("merchant-123", "SKU-001"))
                 .thenThrow(new IllegalArgumentException("Product SKU-001 does not belong to merchant merchant-123"));
 

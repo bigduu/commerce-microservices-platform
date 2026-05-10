@@ -28,7 +28,7 @@ class ProductServiceTest {
     private ProductService productService;
 
     @Test
-    void createProduct_shouldCreateAndSaveProduct() {
+    void createProductShouldCreateAndSaveProduct() {
         Product product = Product.create("SKU-001", "M001", "Test Product", new BigDecimal("19.99"), 100);
         when(productRepository.save(any(Product.class))).thenReturn(product);
 
@@ -44,7 +44,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void getProduct_whenFound_shouldReturnProduct() {
+    void getProductWhenFoundShouldReturnProduct() {
         Product product = Product.create("SKU-002", "M002", "Widget", new BigDecimal("9.99"), 50);
         when(productRepository.findBySku("SKU-002")).thenReturn(Optional.of(product));
 
@@ -57,7 +57,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void getProduct_whenMerchantDoesNotOwnProduct_shouldThrowIllegalArgumentException() {
+    void getProductWhenMerchantDoesNotOwnProductShouldThrowIllegalArgumentException() {
         Product product = Product.create("SKU-002", "OTHER-MERCHANT", "Widget", new BigDecimal("9.99"), 50);
         when(productRepository.findBySku("SKU-002")).thenReturn(Optional.of(product));
 
@@ -70,7 +70,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void getProduct_whenNotFound_shouldThrowAggregateNotFoundException() {
+    void getProductWhenNotFoundShouldThrowAggregateNotFoundException() {
         when(productRepository.findBySku("SKU-999")).thenReturn(Optional.empty());
 
         AggregateNotFoundException exception = assertThrows(
@@ -82,7 +82,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void getProductsByMerchant_shouldReturnListOfProducts() {
+    void getProductsByMerchantShouldReturnListOfProducts() {
         Product product1 = Product.create("SKU-003", "M003", "Product A", new BigDecimal("10.00"), 20);
         Product product2 = Product.create("SKU-004", "M003", "Product B", new BigDecimal("20.00"), 30);
         when(productRepository.findByMerchantId("M003")).thenReturn(Arrays.asList(product1, product2));
@@ -97,7 +97,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void addInventory_shouldCallRepositoryUpdate() {
+    void addInventoryShouldCallRepositoryUpdate() {
         Product product = Product.create("SKU-005", "M005", "Inventory Product", new BigDecimal("19.99"), 100);
         when(productRepository.findBySku("SKU-005")).thenReturn(Optional.of(product));
         when(productRepository.addInventory("SKU-005", 10)).thenReturn(1);
@@ -109,7 +109,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void addInventory_whenMerchantDoesNotOwnProduct_shouldThrowIllegalArgumentException() {
+    void addInventoryWhenMerchantDoesNotOwnProductShouldThrowIllegalArgumentException() {
         Product product = Product.create("SKU-005", "OTHER-MERCHANT", "Inventory Product", new BigDecimal("19.99"), 100);
         when(productRepository.findBySku("SKU-005")).thenReturn(Optional.of(product));
 
@@ -123,7 +123,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void addInventory_whenProductNotFound_shouldThrowAggregateNotFoundException() {
+    void addInventoryWhenProductNotFoundShouldThrowAggregateNotFoundException() {
         when(productRepository.findBySku("SKU-999")).thenReturn(Optional.empty());
 
         AggregateNotFoundException exception = assertThrows(
@@ -136,7 +136,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void deductInventory_shouldCallRepositoryUpdate() {
+    void deductInventoryShouldCallRepositoryUpdate() {
         when(productRepository.deductInventory("SKU-006", 5)).thenReturn(1);
 
         productService.deductInventory("SKU-006", 5);
@@ -145,7 +145,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void deductInventory_whenProductNotFound_shouldThrowAggregateNotFoundException() {
+    void deductInventoryWhenProductNotFoundShouldThrowAggregateNotFoundException() {
         when(productRepository.deductInventory("SKU-999", 5)).thenReturn(0);
 
         AggregateNotFoundException exception = assertThrows(
@@ -157,7 +157,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void addInventory_whenUpdateReturnsZero_shouldThrowAggregateNotFoundException() {
+    void addInventoryWhenUpdateReturnsZeroShouldThrowAggregateNotFoundException() {
         Product product = Product.create("SKU-005", "M005", "Inventory Product", new BigDecimal("19.99"), 100);
         when(productRepository.findBySku("SKU-005")).thenReturn(Optional.of(product));
         when(productRepository.addInventory("SKU-005", 10)).thenReturn(0);
@@ -170,7 +170,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void releaseInventory_shouldCallRepositoryAddInventory() {
+    void releaseInventoryShouldCallRepositoryAddInventory() {
         when(productRepository.addInventory("SKU-007", 3)).thenReturn(1);
 
         productService.releaseInventory("SKU-007", 3);
@@ -179,7 +179,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void releaseInventory_whenProductNotFound_shouldThrowAggregateNotFoundException() {
+    void releaseInventoryWhenProductNotFoundShouldThrowAggregateNotFoundException() {
         when(productRepository.addInventory("SKU-999", 3)).thenReturn(0);
 
         AggregateNotFoundException exception = assertThrows(

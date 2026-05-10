@@ -17,7 +17,7 @@ class OrderTest {
     private static final String SKU = "SKU-001";
 
     @Test
-    void constructor_shouldCalculateTotalAmountCorrectly() {
+    void constructorShouldCalculateTotalAmountCorrectly() {
         BigDecimal unitPrice = new BigDecimal("19.99");
         int quantity = 3;
 
@@ -28,14 +28,14 @@ class OrderTest {
     }
 
     @Test
-    void constructor_shouldSetStatusToPending() {
+    void constructorShouldSetStatusToPending() {
         Order order = new Order(ORDER_ID, USER_ID, MERCHANT_ID, SKU, 1, BigDecimal.TEN);
 
         assertEquals(OrderStatus.PENDING, order.getStatus());
     }
 
     @Test
-    void constructor_shouldSetAllFields() {
+    void constructorShouldSetAllFields() {
         Order order = new Order(ORDER_ID, USER_ID, MERCHANT_ID, SKU, 5, new BigDecimal("7.50"));
 
         assertEquals(ORDER_ID, order.getOrderId());
@@ -47,7 +47,7 @@ class OrderTest {
     }
 
     @Test
-    void transitionTo_shouldAllowPendingToPaymentProcessing() {
+    void transitionToShouldAllowPendingToPaymentProcessing() {
         Order order = new Order(ORDER_ID, USER_ID, MERCHANT_ID, SKU, 1, BigDecimal.TEN);
 
         order.transitionTo(OrderStatus.PAYMENT_PROCESSING);
@@ -56,7 +56,7 @@ class OrderTest {
     }
 
     @Test
-    void transitionTo_shouldAllowPendingToCancelled() {
+    void transitionToShouldAllowPendingToCancelled() {
         Order order = new Order(ORDER_ID, USER_ID, MERCHANT_ID, SKU, 1, BigDecimal.TEN);
 
         order.transitionTo(OrderStatus.CANCELLED);
@@ -65,7 +65,7 @@ class OrderTest {
     }
 
     @Test
-    void transitionTo_shouldAllowPaymentProcessingToInventoryProcessing() {
+    void transitionToShouldAllowPaymentProcessingToInventoryProcessing() {
         Order order = new Order(ORDER_ID, USER_ID, MERCHANT_ID, SKU, 1, BigDecimal.TEN);
         order.transitionTo(OrderStatus.PAYMENT_PROCESSING);
 
@@ -75,7 +75,7 @@ class OrderTest {
     }
 
     @Test
-    void transitionTo_shouldAllowPaymentProcessingToFailed() {
+    void transitionToShouldAllowPaymentProcessingToFailed() {
         Order order = new Order(ORDER_ID, USER_ID, MERCHANT_ID, SKU, 1, BigDecimal.TEN);
         order.transitionTo(OrderStatus.PAYMENT_PROCESSING);
 
@@ -85,7 +85,7 @@ class OrderTest {
     }
 
     @Test
-    void transitionTo_shouldAllowInventoryProcessingToMerchantCrediting() {
+    void transitionToShouldAllowInventoryProcessingToMerchantCrediting() {
         Order order = new Order(ORDER_ID, USER_ID, MERCHANT_ID, SKU, 1, BigDecimal.TEN);
         order.transitionTo(OrderStatus.PAYMENT_PROCESSING);
         order.transitionTo(OrderStatus.INVENTORY_PROCESSING);
@@ -96,7 +96,7 @@ class OrderTest {
     }
 
     @Test
-    void transitionTo_shouldAllowInventoryProcessingToFailed() {
+    void transitionToShouldAllowInventoryProcessingToFailed() {
         Order order = new Order(ORDER_ID, USER_ID, MERCHANT_ID, SKU, 1, BigDecimal.TEN);
         order.transitionTo(OrderStatus.PAYMENT_PROCESSING);
         order.transitionTo(OrderStatus.INVENTORY_PROCESSING);
@@ -107,7 +107,7 @@ class OrderTest {
     }
 
     @Test
-    void transitionTo_shouldAllowMerchantCreditingToCompleted() {
+    void transitionToShouldAllowMerchantCreditingToCompleted() {
         Order order = new Order(ORDER_ID, USER_ID, MERCHANT_ID, SKU, 1, BigDecimal.TEN);
         order.transitionTo(OrderStatus.PAYMENT_PROCESSING);
         order.transitionTo(OrderStatus.INVENTORY_PROCESSING);
@@ -119,7 +119,7 @@ class OrderTest {
     }
 
     @Test
-    void transitionTo_shouldAllowMerchantCreditingToFailed() {
+    void transitionToShouldAllowMerchantCreditingToFailed() {
         Order order = new Order(ORDER_ID, USER_ID, MERCHANT_ID, SKU, 1, BigDecimal.TEN);
         order.transitionTo(OrderStatus.PAYMENT_PROCESSING);
         order.transitionTo(OrderStatus.INVENTORY_PROCESSING);
@@ -131,7 +131,7 @@ class OrderTest {
     }
 
     @Test
-    void transitionTo_shouldCompleteFullHappyPath() {
+    void transitionToShouldCompleteFullHappyPath() {
         Order order = new Order(ORDER_ID, USER_ID, MERCHANT_ID, SKU, 1, BigDecimal.TEN);
 
         order.transitionTo(OrderStatus.PAYMENT_PROCESSING);
@@ -143,7 +143,7 @@ class OrderTest {
     }
 
     @Test
-    void transitionTo_sameStatus_shouldBeNoOp() {
+    void transitionToSameStatusShouldBeNoOp() {
         Order order = new Order(ORDER_ID, USER_ID, MERCHANT_ID, SKU, 1, BigDecimal.TEN);
 
         order.transitionTo(OrderStatus.PENDING);
@@ -188,7 +188,7 @@ class OrderTest {
             "CANCELLED,COMPLETED",
             "CANCELLED,FAILED"
     })
-    void transitionTo_invalidTransition_shouldThrowIllegalStateException(String fromStatus, String toStatus) {
+    void transitionToInvalidTransitionShouldThrowIllegalStateException(String fromStatus, String toStatus) {
         Order order = new Order(ORDER_ID, USER_ID, MERCHANT_ID, SKU, 1, BigDecimal.TEN);
         order.setStatus(OrderStatus.valueOf(fromStatus));
 
@@ -202,7 +202,7 @@ class OrderTest {
     }
 
     @Test
-    void transitionTo_shouldThrow_whenTransitioningFromFailed() {
+    void transitionToShouldThrowWhenTransitioningFromFailed() {
         Order order = new Order(ORDER_ID, USER_ID, MERCHANT_ID, SKU, 1, BigDecimal.TEN);
         order.setStatus(OrderStatus.FAILED);
 
@@ -211,7 +211,7 @@ class OrderTest {
     }
 
     @Test
-    void transitionTo_shouldThrow_whenTransitioningFromCompleted() {
+    void transitionToShouldThrowWhenTransitioningFromCompleted() {
         Order order = new Order(ORDER_ID, USER_ID, MERCHANT_ID, SKU, 1, BigDecimal.TEN);
         order.setStatus(OrderStatus.COMPLETED);
 
@@ -220,7 +220,7 @@ class OrderTest {
     }
 
     @Test
-    void transitionTo_shouldThrow_whenTransitioningFromCancelled() {
+    void transitionToShouldThrowWhenTransitioningFromCancelled() {
         Order order = new Order(ORDER_ID, USER_ID, MERCHANT_ID, SKU, 1, BigDecimal.TEN);
         order.setStatus(OrderStatus.CANCELLED);
 
@@ -229,7 +229,7 @@ class OrderTest {
     }
 
     @Test
-    void settersAndGetters_shouldWork() {
+    void settersAndGettersShouldWork() {
         Order order = new Order();
         order.setOrderId("o1");
         order.setUserId("u1");

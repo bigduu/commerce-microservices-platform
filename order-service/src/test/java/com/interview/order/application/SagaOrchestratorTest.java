@@ -98,7 +98,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void startSaga_shouldCreateSagaInstance_transitionOrderAndSendDeductPaymentCommand() {
+    void startSagaShouldCreateSagaInstanceTransitionOrderAndSendDeductPaymentCommand() {
         Order order = createOrder();
         when(sagaInstanceRepository.save(any(SagaInstance.class))).thenAnswer(inv -> inv.getArgument(0));
         when(orderRepository.save(any(Order.class))).thenAnswer(inv -> inv.getArgument(0));
@@ -135,7 +135,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handlePaymentDeducted_shouldTransitionToInventoryProcessing_andSendReserveInventoryCommand() throws JsonProcessingException {
+    void handlePaymentDeductedShouldTransitionToInventoryProcessingAndSendReserveInventoryCommand() throws JsonProcessingException {
         SagaInstance saga = createSaga(SagaStep.DEDUCT_PAYMENT, SagaStatus.RUNNING, "[]");
         Order order = createOrder();
         order.setStatus(OrderStatus.PAYMENT_PROCESSING);
@@ -171,7 +171,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handlePaymentDeducted_shouldIgnore_whenSagaNotRunning() {
+    void handlePaymentDeductedShouldIgnoreWhenSagaNotRunning() {
         SagaInstance saga = createSaga(SagaStep.DEDUCT_PAYMENT, SagaStatus.FAILED, "[]");
         Order order = createOrder();
         order.setStatus(OrderStatus.FAILED);
@@ -187,7 +187,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handlePaymentDeductFailed_shouldMarkSagaAndOrderAsFailed() {
+    void handlePaymentDeductFailedShouldMarkSagaAndOrderAsFailed() {
         SagaInstance saga = createSaga(SagaStep.DEDUCT_PAYMENT, SagaStatus.RUNNING, "[]");
         Order order = createOrder();
         order.setStatus(OrderStatus.PAYMENT_PROCESSING);
@@ -211,7 +211,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handleInventoryReserved_shouldTransitionToMerchantCrediting_andSendCreditMerchantCommand() throws JsonProcessingException {
+    void handleInventoryReservedShouldTransitionToMerchantCreditingAndSendCreditMerchantCommand() throws JsonProcessingException {
         SagaInstance saga = createSaga(SagaStep.RESERVE_INVENTORY, SagaStatus.RUNNING, "[\"DEDUCT_PAYMENT\"]");
         Order order = createOrder();
         order.setStatus(OrderStatus.INVENTORY_PROCESSING);
@@ -248,7 +248,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handleInventoryReserved_shouldIgnore_whenSagaNotRunning() {
+    void handleInventoryReservedShouldIgnoreWhenSagaNotRunning() {
         SagaInstance saga = createSaga(SagaStep.RESERVE_INVENTORY, SagaStatus.COMPENSATING, "[]");
         Order order = createOrder();
         order.setStatus(OrderStatus.FAILED);
@@ -264,7 +264,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handleInventoryReserveFailed_shouldStartCompensation_andSendRefundPaymentCommand() {
+    void handleInventoryReserveFailedShouldStartCompensationAndSendRefundPaymentCommand() {
         SagaInstance saga = createSaga(SagaStep.RESERVE_INVENTORY, SagaStatus.RUNNING, "[\"DEDUCT_PAYMENT\"]");
         Order order = createOrder();
         order.setStatus(OrderStatus.INVENTORY_PROCESSING);
@@ -297,7 +297,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handleMerchantCredited_shouldMarkSagaCompleted_andOrderCompleted() {
+    void handleMerchantCreditedShouldMarkSagaCompletedAndOrderCompleted() {
         SagaInstance saga = createSaga(SagaStep.CREDIT_MERCHANT, SagaStatus.RUNNING, "[\"DEDUCT_PAYMENT\",\"RESERVE_INVENTORY\"]");
         Order order = createOrder();
         order.setStatus(OrderStatus.MERCHANT_CREDITING);
@@ -321,7 +321,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handleMerchantCredited_shouldIgnore_whenSagaNotRunning() {
+    void handleMerchantCreditedShouldIgnoreWhenSagaNotRunning() {
         SagaInstance saga = createSaga(SagaStep.CREDIT_MERCHANT, SagaStatus.FAILED, "[]");
         Order order = createOrder();
         order.setStatus(OrderStatus.FAILED);
@@ -337,7 +337,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handleMerchantCreditFailed_shouldSendReleaseInventoryAndRefundPayment_andMarkFailed() {
+    void handleMerchantCreditFailedShouldSendReleaseInventoryAndRefundPaymentAndMarkFailed() {
         SagaInstance saga = createSaga(SagaStep.CREDIT_MERCHANT, SagaStatus.RUNNING, "[\"DEDUCT_PAYMENT\",\"RESERVE_INVENTORY\"]");
         Order order = createOrder();
         order.setStatus(OrderStatus.MERCHANT_CREDITING);
@@ -382,7 +382,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handlePaymentDeducted_shouldThrow_whenSagaNotFound() {
+    void handlePaymentDeductedShouldThrowWhenSagaNotFound() {
         when(sagaInstanceRepository.findById(SAGA_ID)).thenReturn(Optional.empty());
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
@@ -391,7 +391,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handlePaymentDeducted_shouldThrow_whenOrderNotFound() {
+    void handlePaymentDeductedShouldThrowWhenOrderNotFound() {
         SagaInstance saga = createSaga(SagaStep.DEDUCT_PAYMENT, SagaStatus.RUNNING, "[]");
         when(sagaInstanceRepository.findById(SAGA_ID)).thenReturn(Optional.of(saga));
         when(orderRepository.findById(ORDER_ID)).thenReturn(Optional.empty());
@@ -402,7 +402,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handlePaymentDeductFailed_shouldThrow_whenSagaNotFound() {
+    void handlePaymentDeductFailedShouldThrowWhenSagaNotFound() {
         when(sagaInstanceRepository.findById(SAGA_ID)).thenReturn(Optional.empty());
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
@@ -411,7 +411,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handleInventoryReserved_shouldThrow_whenOrderNotFound() {
+    void handleInventoryReservedShouldThrowWhenOrderNotFound() {
         SagaInstance saga = createSaga(SagaStep.RESERVE_INVENTORY, SagaStatus.RUNNING, "[]");
         when(sagaInstanceRepository.findById(SAGA_ID)).thenReturn(Optional.of(saga));
         when(orderRepository.findById(ORDER_ID)).thenReturn(Optional.empty());
@@ -422,7 +422,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handleMerchantCredited_shouldThrow_whenSagaNotFound() {
+    void handleMerchantCreditedShouldThrowWhenSagaNotFound() {
         when(sagaInstanceRepository.findById(SAGA_ID)).thenReturn(Optional.empty());
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
@@ -431,7 +431,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handleMerchantCreditFailed_shouldThrow_whenOrderNotFound() {
+    void handleMerchantCreditFailedShouldThrowWhenOrderNotFound() {
         SagaInstance saga = createSaga(SagaStep.CREDIT_MERCHANT, SagaStatus.RUNNING, "[]");
         when(sagaInstanceRepository.findById(SAGA_ID)).thenReturn(Optional.of(saga));
         when(orderRepository.findById(ORDER_ID)).thenReturn(Optional.empty());
@@ -442,7 +442,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void appendCompletedStep_shouldHandleMultipleSteps() throws JsonProcessingException {
+    void appendCompletedStepShouldHandleMultipleSteps() throws JsonProcessingException {
         SagaInstance saga1 = createSaga(SagaStep.DEDUCT_PAYMENT, SagaStatus.RUNNING, "[]");
         Order order1 = createOrder();
         order1.setStatus(OrderStatus.PAYMENT_PROCESSING);
@@ -478,7 +478,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handlePaymentDeducted_shouldAppendCompletedStep_whenCompletedStepsIsNotEmpty() throws JsonProcessingException {
+    void handlePaymentDeductedShouldAppendCompletedStepWhenCompletedStepsIsNotEmpty() throws JsonProcessingException {
         SagaInstance saga = createSaga(SagaStep.DEDUCT_PAYMENT, SagaStatus.RUNNING, "[\"DEDUCT_PAYMENT\"]");
         Order order = createOrder();
         order.setStatus(OrderStatus.PAYMENT_PROCESSING);
@@ -499,7 +499,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handleTimeout_shouldMarkFailed_whenDeductPaymentTimedOut() {
+    void handleTimeoutShouldMarkFailedWhenDeductPaymentTimedOut() {
         SagaInstance saga = createSaga(SagaStep.DEDUCT_PAYMENT, SagaStatus.RUNNING, "[]");
         Order order = createOrder();
         order.setStatus(OrderStatus.PAYMENT_PROCESSING);
@@ -523,7 +523,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handleTimeout_shouldRefund_whenReserveInventoryTimedOut() {
+    void handleTimeoutShouldRefundWhenReserveInventoryTimedOut() {
         SagaInstance saga = createSaga(SagaStep.RESERVE_INVENTORY, SagaStatus.RUNNING, "[\"DEDUCT_PAYMENT\"]");
         Order order = createOrder();
         order.setStatus(OrderStatus.INVENTORY_PROCESSING);
@@ -549,7 +549,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handleTimeout_shouldReleaseInventoryAndRefund_whenCreditMerchantTimedOut() {
+    void handleTimeoutShouldReleaseInventoryAndRefundWhenCreditMerchantTimedOut() {
         SagaInstance saga = createSaga(SagaStep.CREDIT_MERCHANT, SagaStatus.RUNNING, "[\"DEDUCT_PAYMENT\",\"RESERVE_INVENTORY\"]");
         Order order = createOrder();
         order.setStatus(OrderStatus.MERCHANT_CREDITING);
@@ -568,7 +568,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handleTimeout_shouldMarkFailed_whenCompensatingTimedOut() {
+    void handleTimeoutShouldMarkFailedWhenCompensatingTimedOut() {
         SagaInstance saga = createSaga(SagaStep.CREDIT_MERCHANT, SagaStatus.COMPENSATING, "[\"DEDUCT_PAYMENT\",\"RESERVE_INVENTORY\"]");
         Order order = createOrder();
         order.setStatus(OrderStatus.FAILED);
@@ -586,7 +586,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handleTimeout_shouldIgnore_whenSagaCompleted() {
+    void handleTimeoutShouldIgnoreWhenSagaCompleted() {
         SagaInstance saga = createSaga(SagaStep.CREDIT_MERCHANT, SagaStatus.COMPLETED, "[\"DEDUCT_PAYMENT\",\"RESERVE_INVENTORY\"]");
         Order order = createOrder();
         order.setStatus(OrderStatus.COMPLETED);
@@ -602,7 +602,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handleTimeout_shouldIgnore_whenSagaFailed() {
+    void handleTimeoutShouldIgnoreWhenSagaFailed() {
         SagaInstance saga = createSaga(SagaStep.DEDUCT_PAYMENT, SagaStatus.FAILED, "[]");
         Order order = createOrder();
         order.setStatus(OrderStatus.FAILED);
@@ -618,7 +618,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handleTimeout_compensatingTimedOut_orderNotFailed_shouldTransitionOrderToFailed() {
+    void handleTimeoutCompensatingTimedOutOrderNotFailedShouldTransitionOrderToFailed() {
         SagaInstance saga = createSaga(SagaStep.RESERVE_INVENTORY, SagaStatus.COMPENSATING, "[\"DEDUCT_PAYMENT\"]");
         Order order = createOrder();
         order.setStatus(OrderStatus.PAYMENT_PROCESSING);
@@ -640,7 +640,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handleTimeout_shouldThrow_whenSagaNotFound() {
+    void handleTimeoutShouldThrowWhenSagaNotFound() {
         when(sagaInstanceRepository.findById(SAGA_ID)).thenReturn(Optional.empty());
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
@@ -649,7 +649,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handleTimeout_shouldThrow_whenOrderNotFound() {
+    void handleTimeoutShouldThrowWhenOrderNotFound() {
         SagaInstance saga = createSaga(SagaStep.DEDUCT_PAYMENT, SagaStatus.RUNNING, "[]");
 
         when(sagaInstanceRepository.findById(SAGA_ID)).thenReturn(Optional.of(saga));
@@ -661,7 +661,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void startSaga_shouldThrow_whenOrderTransitionFails() {
+    void startSagaShouldThrowWhenOrderTransitionFails() {
         Order order = createOrder();
         order.setStatus(OrderStatus.COMPLETED);
 
@@ -670,7 +670,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handlePaymentDeducted_shouldThrow_whenCompletedStepsIsCorrupted() {
+    void handlePaymentDeductedShouldThrowWhenCompletedStepsIsCorrupted() {
         SagaInstance saga = new SagaInstance(SAGA_ID, ORDER_ID, SagaStep.DEDUCT_PAYMENT, SagaStatus.RUNNING, "invalid-json{", Instant.now().plusSeconds(300));
         Order order = createOrder();
         order.setStatus(OrderStatus.PAYMENT_PROCESSING);
@@ -684,7 +684,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handleInventoryReserveFailed_shouldThrow_whenSagaNotFound() {
+    void handleInventoryReserveFailedShouldThrowWhenSagaNotFound() {
         when(sagaInstanceRepository.findById(SAGA_ID)).thenReturn(Optional.empty());
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
@@ -693,7 +693,7 @@ class SagaOrchestratorTest {
     }
 
     @Test
-    void handlePaymentDeductFailed_shouldThrow_whenOrderNotFound() {
+    void handlePaymentDeductFailedShouldThrowWhenOrderNotFound() {
         SagaInstance saga = createSaga(SagaStep.DEDUCT_PAYMENT, SagaStatus.RUNNING, "[]");
         when(sagaInstanceRepository.findById(SAGA_ID)).thenReturn(Optional.of(saga));
         when(orderRepository.findById(ORDER_ID)).thenReturn(Optional.empty());

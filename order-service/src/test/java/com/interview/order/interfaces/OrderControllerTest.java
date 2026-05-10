@@ -49,7 +49,7 @@ class OrderControllerTest {
     }
 
     @Test
-    void createOrder_returns201() throws Exception {
+    void createOrderReturns201() throws Exception {
         CreateOrderRequest request = new CreateOrderRequest(
                 "user-1", "merchant-1", "SKU-001", 2
         );
@@ -75,7 +75,7 @@ class OrderControllerTest {
     }
 
     @Test
-    void getOrder_returns200() throws Exception {
+    void getOrderReturns200() throws Exception {
         Order order = createOrder("order-1", "user-1", "merchant-1", "SKU-001", 2, new BigDecimal("10.00"));
 
         when(orderService.getOrder("order-1")).thenReturn(order);
@@ -91,7 +91,7 @@ class OrderControllerTest {
     }
 
     @Test
-    void getUserOrders_returns200WithList() throws Exception {
+    void getUserOrdersReturns200WithList() throws Exception {
         Order order1 = createOrder("order-1", "user-1", "merchant-1", "SKU-001", 1, new BigDecimal("5.00"));
         Order order2 = createOrder("order-2", "user-1", "merchant-2", "SKU-002", 3, new BigDecimal("7.50"));
 
@@ -109,7 +109,7 @@ class OrderControllerTest {
     }
 
     @Test
-    void createOrder_withInvalidRequest_returns400() throws Exception {
+    void createOrderWithInvalidRequestReturns400() throws Exception {
         CreateOrderRequest invalidRequest = new CreateOrderRequest(
                 "", "merchant-1", "SKU-001", 0
         );
@@ -121,7 +121,7 @@ class OrderControllerTest {
     }
 
     @Test
-    void getOrder_whenNotFound_returns400() throws Exception {
+    void getOrderWhenNotFoundReturns400() throws Exception {
         when(orderService.getOrder("not-found"))
                 .thenThrow(new IllegalArgumentException("Order not found: not-found"));
 

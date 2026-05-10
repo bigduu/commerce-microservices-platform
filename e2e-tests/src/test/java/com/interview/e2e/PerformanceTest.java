@@ -63,7 +63,7 @@ class PerformanceTest {
      * - Assert total batch time < 5 seconds
      */
     @Test
-    void eventStoreWritePerformance_shouldCompleteWithinLimits() throws Exception {
+    void eventStoreWritePerformanceShouldCompleteWithinLimits() throws Exception {
         // Create domain_events table
         try (Connection connection = DriverManager.getConnection(
                 postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
@@ -133,7 +133,7 @@ class PerformanceTest {
      * - Assert throughput > 1000 msg/sec
      */
     @Test
-    void kafkaThroughput_shouldExceedThreshold() throws Exception {
+    void kafkaThroughputShouldExceedThreshold() throws Exception {
         String bootstrapServers = kafka.getBootstrapServers();
         String topic = "perf-test-topic";
         int messageCount = 1000;
@@ -201,7 +201,7 @@ class PerformanceTest {
      * - Assert < 1 second for 10000 state transitions
      */
     @Test
-    void orderStateMachinePerformance_shouldCompleteWithinOneSecond() {
+    void orderStateMachinePerformanceShouldCompleteWithinOneSecond() {
         int orderCount = 10000;
 
         long start = System.nanoTime();
@@ -243,7 +243,7 @@ class PerformanceTest {
      * - Assert all complete within reasonable time
      */
     @Test
-    void concurrentSagaProcessing_shouldCompleteAllWithinReasonableTime() throws Exception {
+    void concurrentSagaProcessingShouldCompleteAllWithinReasonableTime() throws Exception {
         int threadCount = 10;
         int sagasPerThread = 100;
         int totalSagas = threadCount * sagasPerThread;

@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class ReadModelTest {
 
     @Test
-    void orderReadModel_parameterizedConstructorSetsValues() {
+    void orderReadModelParameterizedConstructorSetsValues() {
         Instant completedAt = Instant.parse("2024-01-15T10:00:00Z");
 
         OrderReadModel order = new OrderReadModel(
@@ -33,7 +33,7 @@ class ReadModelTest {
     }
 
     @Test
-    void orderReadModel_settersAndGettersWork() {
+    void orderReadModelSettersAndGettersWork() {
         OrderReadModel order = new OrderReadModel();
         Instant completedAt = Instant.parse("2024-03-01T12:00:00Z");
 
@@ -59,7 +59,7 @@ class ReadModelTest {
     }
 
     @Test
-    void orderReadModel_defaultConstructorCreatesEmptyObject() {
+    void orderReadModelDefaultConstructorCreatesEmptyObject() {
         OrderReadModel order = new OrderReadModel();
 
         assertNull(order.getId());
@@ -74,7 +74,7 @@ class ReadModelTest {
     }
 
     @Test
-    void merchantCreditReadModel_parameterizedConstructorSetsValues() {
+    void merchantCreditReadModelParameterizedConstructorSetsValues() {
         Instant creditedAt = Instant.parse("2024-01-15T10:00:00Z");
 
         MerchantCreditReadModel credit = new MerchantCreditReadModel(
@@ -91,7 +91,7 @@ class ReadModelTest {
     }
 
     @Test
-    void merchantCreditReadModel_settersAndGettersWork() {
+    void merchantCreditReadModelSettersAndGettersWork() {
         MerchantCreditReadModel credit = new MerchantCreditReadModel();
         Instant creditedAt = Instant.parse("2024-03-01T12:00:00Z");
 
@@ -111,7 +111,7 @@ class ReadModelTest {
     }
 
     @Test
-    void merchantCreditReadModel_defaultConstructorCreatesEmptyObject() {
+    void merchantCreditReadModelDefaultConstructorCreatesEmptyObject() {
         MerchantCreditReadModel credit = new MerchantCreditReadModel();
 
         assertNull(credit.getId());

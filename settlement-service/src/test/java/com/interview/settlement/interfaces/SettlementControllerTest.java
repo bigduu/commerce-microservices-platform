@@ -42,7 +42,7 @@ class SettlementControllerTest {
     }
 
     @Test
-    void getSettlements_returns200WithList() throws Exception {
+    void getSettlementsReturns200WithList() throws Exception {
         String merchantId = "merchant-1";
         SettlementReport report1 = new SettlementReport(
                 "rpt-1", merchantId, LocalDate.of(2024, 1, 15),
@@ -75,7 +75,7 @@ class SettlementControllerTest {
     }
 
     @Test
-    void getSettlements_returns200WithEmptyList() throws Exception {
+    void getSettlementsReturns200WithEmptyList() throws Exception {
         String merchantId = "merchant-1";
 
         when(settlementService.getSettlements(merchantId)).thenReturn(Collections.emptyList());
@@ -86,7 +86,7 @@ class SettlementControllerTest {
     }
 
     @Test
-    void getLatestSettlement_returns200() throws Exception {
+    void getLatestSettlementReturns200() throws Exception {
         String merchantId = "merchant-1";
         SettlementReport report = new SettlementReport(
                 "rpt-latest", merchantId, LocalDate.of(2024, 1, 20),
@@ -110,7 +110,7 @@ class SettlementControllerTest {
     }
 
     @Test
-    void getLatestSettlement_whenNotFound_returns404() throws Exception {
+    void getLatestSettlementWhenNotFoundReturns404() throws Exception {
         String merchantId = "merchant-1";
 
         when(settlementService.getLatestSettlement(merchantId)).thenReturn(null);

@@ -35,7 +35,7 @@ class EventStoreRepositoryTest {
     private EventStoreRepository eventStoreRepository;
 
     @Test
-    void loadEvents_shouldQueryDomainEventsOrderedByVersion() {
+    void loadEventsShouldQueryDomainEventsOrderedByVersion() {
         String aggregateId = "user-1";
         UserAccountEvents.AccountCreated event = new UserAccountEvents.AccountCreated(aggregateId, "alice");
         event.setVersion(1L);
@@ -56,7 +56,7 @@ class EventStoreRepositoryTest {
     }
 
     @Test
-    void loadEvents_shouldReturnEmptyListWhenNoEvents() {
+    void loadEventsShouldReturnEmptyListWhenNoEvents() {
         String aggregateId = "user-1";
 
         when(jdbcTemplate.query(anyString(), any(RowMapper.class), eq(aggregateId)))
@@ -68,7 +68,7 @@ class EventStoreRepositoryTest {
     }
 
     @Test
-    void save_shouldInsertPendingEvents() {
+    void saveShouldInsertPendingEvents() {
         UserAccount account = UserAccount.create("user-1", "alice");
 
         when(jdbcTemplate.batchUpdate(anyString(), any(List.class), anyInt(), any())).thenReturn(new int[][]{{1}});
@@ -79,7 +79,7 @@ class EventStoreRepositoryTest {
     }
 
     @Test
-    void save_shouldDoNothingWhenNoPendingEvents() {
+    void saveShouldDoNothingWhenNoPendingEvents() {
         UserAccount account = UserAccount.create("user-1", "alice");
         account.clearPendingEvents();
 
@@ -89,7 +89,7 @@ class EventStoreRepositoryTest {
     }
 
     @Test
-    void save_shouldClearPendingEventsAfterInsert() {
+    void saveShouldClearPendingEventsAfterInsert() {
         UserAccount account = UserAccount.create("user-1", "alice");
 
         eventStoreRepository.save(account);
@@ -98,7 +98,7 @@ class EventStoreRepositoryTest {
     }
 
     @Test
-    void save_shouldThrowOptimisticLockExceptionOnDuplicateKey() {
+    void saveShouldThrowOptimisticLockExceptionOnDuplicateKey() {
         UserAccount account = UserAccount.create("user-1", "alice");
 
         when(jdbcTemplate.batchUpdate(anyString(), any(List.class), anyInt(), any()))
@@ -111,7 +111,7 @@ class EventStoreRepositoryTest {
     }
 
     @Test
-    void eventRowMapper_shouldMapAccountCreatedEvent() throws Exception {
+    void eventRowMapperShouldMapAccountCreatedEvent() throws Exception {
         ResultSet rs = mock(ResultSet.class);
         Instant now = Instant.now();
 
@@ -144,7 +144,7 @@ class EventStoreRepositoryTest {
     }
 
     @Test
-    void eventRowMapper_shouldMapAccountToppedUpEvent() throws Exception {
+    void eventRowMapperShouldMapAccountToppedUpEvent() throws Exception {
         ResultSet rs = mock(ResultSet.class);
         Instant now = Instant.now();
         UserAccountEvents.AccountToppedUp realEvent = new UserAccountEvents.AccountToppedUp("user-1", new BigDecimal("50.00"));
@@ -172,7 +172,7 @@ class EventStoreRepositoryTest {
     }
 
     @Test
-    void eventRowMapper_shouldMapPaymentDeductedAndRefundedEvents() throws Exception {
+    void eventRowMapperShouldMapPaymentDeductedAndRefundedEvents() throws Exception {
         ResultSet rs1 = mock(ResultSet.class);
         Instant now = Instant.now();
         UserAccountEvents.PaymentDeducted deducted = new UserAccountEvents.PaymentDeducted("user-1", "order-1", new BigDecimal("30.00"));
@@ -201,7 +201,7 @@ class EventStoreRepositoryTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    void eventRowMapper_shouldMapPaymentRefundFailedEvent() throws Exception {
+    void eventRowMapperShouldMapPaymentRefundFailedEvent() throws Exception {
         ResultSet rs = mock(ResultSet.class);
         Instant now = Instant.now();
         UserAccountEvents.PaymentRefundFailed realEvent = new UserAccountEvents.PaymentRefundFailed("user-1", "order-1", new BigDecimal("50.00"));
@@ -229,7 +229,7 @@ class EventStoreRepositoryTest {
     }
 
     @Test
-    void eventRowMapper_shouldThrowForUnknownEventType() throws Exception {
+    void eventRowMapperShouldThrowForUnknownEventType() throws Exception {
         ResultSet rs = mock(ResultSet.class);
         String eventData = "{}";
 

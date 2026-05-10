@@ -9,14 +9,14 @@ import static org.junit.jupiter.api.Assertions.*;
 class DtoTest {
 
     @Test
-    void createUserRequest_shouldConstructAndGetUsername() {
+    void createUserRequestShouldConstructAndGetUsername() {
         CreateUserRequest request = new CreateUserRequest("alice");
 
         assertEquals("alice", request.getUsername());
     }
 
     @Test
-    void createUserRequest_defaultConstructor_shouldAllowSetAndGet() {
+    void createUserRequestDefaultConstructorShouldAllowSetAndGet() {
         CreateUserRequest request = new CreateUserRequest();
         request.setUsername("bob");
 
@@ -24,7 +24,7 @@ class DtoTest {
     }
 
     @Test
-    void topUpRequest_shouldConstructAndGetAmount() {
+    void topUpRequestShouldConstructAndGetAmount() {
         BigDecimal amount = new BigDecimal("50.00");
         TopUpRequest request = new TopUpRequest(amount);
 
@@ -32,7 +32,7 @@ class DtoTest {
     }
 
     @Test
-    void topUpRequest_defaultConstructor_shouldAllowSetAndGet() {
+    void topUpRequestDefaultConstructorShouldAllowSetAndGet() {
         TopUpRequest request = new TopUpRequest();
         BigDecimal amount = new BigDecimal("25.00");
         request.setAmount(amount);
@@ -41,7 +41,7 @@ class DtoTest {
     }
 
     @Test
-    void balanceResponse_shouldConstructAndGetFields() {
+    void balanceResponseShouldConstructAndGetFields() {
         String userId = "user-1";
         BigDecimal balance = new BigDecimal("100.00");
         BalanceResponse response = new BalanceResponse(userId, balance);
@@ -51,7 +51,7 @@ class DtoTest {
     }
 
     @Test
-    void balanceResponse_defaultConstructor_shouldAllowSetAndGet() {
+    void balanceResponseDefaultConstructorShouldAllowSetAndGet() {
         BalanceResponse response = new BalanceResponse();
         response.setUserId("user-2");
         response.setBalance(new BigDecimal("75.00"));
@@ -61,7 +61,7 @@ class DtoTest {
     }
 
     @Test
-    void userResponse_shouldConstructAndGetFields() {
+    void userResponseShouldConstructAndGetFields() {
         String userId = "user-1";
         String username = "alice";
         BigDecimal balance = new BigDecimal("200.00");
@@ -73,7 +73,7 @@ class DtoTest {
     }
 
     @Test
-    void userResponse_defaultConstructor_shouldAllowSetAndGet() {
+    void userResponseDefaultConstructorShouldAllowSetAndGet() {
         UserResponse response = new UserResponse();
         response.setUserId("user-3");
         response.setUsername("charlie");

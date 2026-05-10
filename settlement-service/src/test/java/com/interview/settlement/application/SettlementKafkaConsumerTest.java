@@ -41,7 +41,7 @@ class SettlementKafkaConsumerTest {
     }
 
     @Test
-    void handleOrderEvent_orderCompleted_savesOrderReadModel() throws Exception {
+    void handleOrderEventOrderCompletedSavesOrderReadModel() throws Exception {
         Instant occurredAt = Instant.parse("2024-01-15T10:00:00Z");
         String message = objectMapper.writeValueAsString(java.util.Map.of(
                 "eventType", "OrderCompleted",
@@ -75,7 +75,7 @@ class SettlementKafkaConsumerTest {
     }
 
     @Test
-    void handleOrderEvent_orderCompleted_alreadyProcessed_skips() throws Exception {
+    void handleOrderEventOrderCompletedAlreadyProcessedSkips() throws Exception {
         String message = objectMapper.writeValueAsString(java.util.Map.of(
                 "eventType", "OrderCompleted",
                 "aggregateId", "order-1"
@@ -91,7 +91,7 @@ class SettlementKafkaConsumerTest {
     }
 
     @Test
-    void handleOrderEvent_otherEventType_acknowledgesOnly() throws Exception {
+    void handleOrderEventOtherEventTypeAcknowledgesOnly() throws Exception {
         String message = objectMapper.writeValueAsString(java.util.Map.of(
                 "eventType", "OrderCreated",
                 "aggregateId", "order-1"
@@ -104,7 +104,7 @@ class SettlementKafkaConsumerTest {
     }
 
     @Test
-    void handleOrderEvent_missingOptionalFields_usesDefaults() throws Exception {
+    void handleOrderEventMissingOptionalFieldsUsesDefaults() throws Exception {
         String message = objectMapper.writeValueAsString(java.util.Map.of(
                 "eventType", "OrderCompleted",
                 "aggregateId", "order-1"
@@ -129,7 +129,7 @@ class SettlementKafkaConsumerTest {
     }
 
     @Test
-    void handleOrderEvent_invalidJson_doesNotAcknowledge() {
+    void handleOrderEventInvalidJsonDoesNotAcknowledge() {
         String message = "invalid json";
 
         consumer.handleOrderEvent(message, acknowledgment);
@@ -139,7 +139,7 @@ class SettlementKafkaConsumerTest {
     }
 
     @Test
-    void handleMerchantEvent_merchantCredited_savesCreditReadModel() throws Exception {
+    void handleMerchantEventMerchantCreditedSavesCreditReadModel() throws Exception {
         Instant occurredAt = Instant.parse("2024-01-15T10:00:00Z");
         String message = objectMapper.writeValueAsString(java.util.Map.of(
                 "eventType", "MerchantCredited",
@@ -167,7 +167,7 @@ class SettlementKafkaConsumerTest {
     }
 
     @Test
-    void handleMerchantEvent_merchantCredited_alreadyProcessed_skips() throws Exception {
+    void handleMerchantEventMerchantCreditedAlreadyProcessedSkips() throws Exception {
         String message = objectMapper.writeValueAsString(java.util.Map.of(
                 "eventType", "MerchantCredited",
                 "eventId", "event-1"
@@ -183,7 +183,7 @@ class SettlementKafkaConsumerTest {
     }
 
     @Test
-    void handleMerchantEvent_merchantCredited_missingEventId_generatesOne() throws Exception {
+    void handleMerchantEventMerchantCreditedMissingEventIdGeneratesOne() throws Exception {
         String message = objectMapper.writeValueAsString(java.util.Map.of(
                 "eventType", "MerchantCredited",
                 "aggregateId", "order-1",
@@ -203,7 +203,7 @@ class SettlementKafkaConsumerTest {
     }
 
     @Test
-    void handleMerchantEvent_otherEventType_acknowledgesOnly() throws Exception {
+    void handleMerchantEventOtherEventTypeAcknowledgesOnly() throws Exception {
         String message = objectMapper.writeValueAsString(java.util.Map.of(
                 "eventType", "MerchantDebited",
                 "aggregateId", "merchant-1"
@@ -216,7 +216,7 @@ class SettlementKafkaConsumerTest {
     }
 
     @Test
-    void handleMerchantEvent_invalidJson_doesNotAcknowledge() {
+    void handleMerchantEventInvalidJsonDoesNotAcknowledge() {
         String message = "invalid json";
 
         consumer.handleMerchantEvent(message, acknowledgment);

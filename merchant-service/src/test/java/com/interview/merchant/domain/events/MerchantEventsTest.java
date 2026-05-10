@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class MerchantEventsTest {
 
     @Test
-    void inventoryReserved_constructorAndGetters() {
+    void inventoryReservedConstructorAndGetters() {
         InventoryReserved event = new InventoryReserved("order-1", "SKU-001", 5);
 
         assertEquals("order-1", event.getOrderId());
@@ -23,7 +23,7 @@ class MerchantEventsTest {
     }
 
     @Test
-    void inventoryReserved_settersAndGetters() {
+    void inventoryReservedSettersAndGetters() {
         InventoryReserved event = new InventoryReserved("order-1", "SKU-001", 5);
 
         event.setOrderId("order-2");
@@ -36,7 +36,7 @@ class MerchantEventsTest {
     }
 
     @Test
-    void inventoryReserved_defaultConstructor() {
+    void inventoryReservedDefaultConstructor() {
         InventoryReserved event = new InventoryReserved();
 
         assertNull(event.getOrderId());
@@ -47,7 +47,7 @@ class MerchantEventsTest {
     }
 
     @Test
-    void inventoryReserveFailed_constructorAndGetters() {
+    void inventoryReserveFailedConstructorAndGetters() {
         InventoryReserveFailed event = new InventoryReserveFailed("order-1", "SKU-001", "Not enough stock");
 
         assertEquals("order-1", event.getOrderId());
@@ -61,7 +61,7 @@ class MerchantEventsTest {
     }
 
     @Test
-    void inventoryReserveFailed_settersAndGetters() {
+    void inventoryReserveFailedSettersAndGetters() {
         InventoryReserveFailed event = new InventoryReserveFailed("order-1", "SKU-001", "Not enough stock");
 
         event.setOrderId("order-2");
@@ -74,7 +74,7 @@ class MerchantEventsTest {
     }
 
     @Test
-    void inventoryReserveFailed_defaultConstructor() {
+    void inventoryReserveFailedDefaultConstructor() {
         InventoryReserveFailed event = new InventoryReserveFailed();
 
         assertNull(event.getOrderId());
@@ -85,7 +85,7 @@ class MerchantEventsTest {
     }
 
     @Test
-    void inventoryReleased_constructorAndGetters() {
+    void inventoryReleasedConstructorAndGetters() {
         InventoryReleased event = new InventoryReleased("order-1", "SKU-001", 3);
 
         assertEquals("order-1", event.getOrderId());
@@ -99,7 +99,7 @@ class MerchantEventsTest {
     }
 
     @Test
-    void inventoryReleased_settersAndGetters() {
+    void inventoryReleasedSettersAndGetters() {
         InventoryReleased event = new InventoryReleased("order-1", "SKU-001", 3);
 
         event.setOrderId("order-2");
@@ -112,7 +112,7 @@ class MerchantEventsTest {
     }
 
     @Test
-    void inventoryReleased_defaultConstructor() {
+    void inventoryReleasedDefaultConstructor() {
         InventoryReleased event = new InventoryReleased();
 
         assertNull(event.getOrderId());
@@ -123,7 +123,7 @@ class MerchantEventsTest {
     }
 
     @Test
-    void merchantCredited_constructorAndGetters() {
+    void merchantCreditedConstructorAndGetters() {
         MerchantCredited event = new MerchantCredited("order-1", "merchant-1", new BigDecimal("100.00"));
 
         assertEquals("order-1", event.getOrderId());
@@ -137,7 +137,7 @@ class MerchantEventsTest {
     }
 
     @Test
-    void merchantCredited_settersAndGetters() {
+    void merchantCreditedSettersAndGetters() {
         MerchantCredited event = new MerchantCredited("order-1", "merchant-1", new BigDecimal("100.00"));
 
         event.setOrderId("order-2");
@@ -150,7 +150,7 @@ class MerchantEventsTest {
     }
 
     @Test
-    void merchantCredited_defaultConstructor() {
+    void merchantCreditedDefaultConstructor() {
         MerchantCredited event = new MerchantCredited();
 
         assertNull(event.getOrderId());
@@ -161,7 +161,7 @@ class MerchantEventsTest {
     }
 
     @Test
-    void merchantDebited_constructorAndGetters() {
+    void merchantDebitedConstructorAndGetters() {
         MerchantDebited event = new MerchantDebited("order-1", "merchant-1", new BigDecimal("50.00"));
 
         assertEquals("order-1", event.getOrderId());
@@ -175,7 +175,7 @@ class MerchantEventsTest {
     }
 
     @Test
-    void merchantDebited_settersAndGetters() {
+    void merchantDebitedSettersAndGetters() {
         MerchantDebited event = new MerchantDebited("order-1", "merchant-1", new BigDecimal("50.00"));
 
         event.setOrderId("order-2");
@@ -188,7 +188,7 @@ class MerchantEventsTest {
     }
 
     @Test
-    void merchantDebited_defaultConstructor() {
+    void merchantDebitedDefaultConstructor() {
         MerchantDebited event = new MerchantDebited();
 
         assertNull(event.getOrderId());
@@ -199,7 +199,7 @@ class MerchantEventsTest {
     }
 
     @Test
-    void merchantCreditFailed_constructorAndGetters() {
+    void merchantCreditFailedConstructorAndGetters() {
         MerchantCreditFailed event = new MerchantCreditFailed("order-1", "merchant-1", new BigDecimal("100.00"));
 
         assertEquals("order-1", event.getOrderId());
@@ -211,7 +211,7 @@ class MerchantEventsTest {
     }
 
     @Test
-    void inventoryReleaseFailed_constructorAndGetters() {
+    void inventoryReleaseFailedConstructorAndGetters() {
         InventoryReleaseFailed event = new InventoryReleaseFailed("order-1", "SKU-001", 3);
 
         assertEquals("order-1", event.getOrderId());

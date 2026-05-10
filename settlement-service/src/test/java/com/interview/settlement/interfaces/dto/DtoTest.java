@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class DtoTest {
 
     @Test
-    void settlementResponse_defaultConstructorCreatesEmptyObject() {
+    void settlementResponseDefaultConstructorCreatesEmptyObject() {
         SettlementResponse response = new SettlementResponse();
 
         assertNull(response.getReportId());
@@ -26,7 +26,7 @@ class DtoTest {
     }
 
     @Test
-    void settlementResponse_parameterizedConstructorSetsValues() {
+    void settlementResponseParameterizedConstructorSetsValues() {
         LocalDate settlementDate = LocalDate.of(2024, 1, 15);
         Instant createdAt = Instant.now();
 
@@ -47,7 +47,7 @@ class DtoTest {
     }
 
     @Test
-    void settlementResponse_settersAndGettersWork() {
+    void settlementResponseSettersAndGettersWork() {
         SettlementResponse response = new SettlementResponse();
         LocalDate settlementDate = LocalDate.of(2024, 3, 1);
         Instant createdAt = Instant.parse("2024-03-01T10:00:00Z");

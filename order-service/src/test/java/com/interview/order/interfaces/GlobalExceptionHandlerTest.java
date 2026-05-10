@@ -21,7 +21,7 @@ class GlobalExceptionHandlerTest {
     private GlobalExceptionHandler handler;
 
     @Test
-    void handleIllegalArgument_returns400() {
+    void handleIllegalArgumentReturns400() {
         IllegalArgumentException ex = new IllegalArgumentException("bad input");
 
         ResponseEntity<GlobalExceptionHandler.ErrorResponse> response = handler.handleIllegalArgument(ex);
@@ -34,7 +34,7 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void handleIllegalState_returns409() {
+    void handleIllegalStateReturns409() {
         IllegalStateException ex = new IllegalStateException("conflict state");
 
         ResponseEntity<GlobalExceptionHandler.ErrorResponse> response = handler.handleIllegalState(ex);
@@ -47,7 +47,7 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void handleValidation_returns400WithFieldErrors() {
+    void handleValidationReturns400WithFieldErrors() {
         Object target = new Object();
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(target, "target");
         bindingResult.addError(new FieldError("target", "orderId", "must not be blank"));
@@ -63,7 +63,7 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void handleGeneric_returns500() {
+    void handleGenericReturns500() {
         Exception ex = new RuntimeException("something broke");
 
         ResponseEntity<GlobalExceptionHandler.ErrorResponse> response = handler.handleGeneric(ex);

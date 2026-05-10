@@ -24,7 +24,7 @@ class GlobalExceptionHandlerTest {
     private GlobalExceptionHandler handler;
 
     @Test
-    void handleNotFound_returns404WithErrorResponse() {
+    void handleNotFoundReturns404WithErrorResponse() {
         AggregateNotFoundException ex = new AggregateNotFoundException("merchant-123");
 
         ResponseEntity<GlobalExceptionHandler.ErrorResponse> response = handler.handleNotFound(ex);
@@ -37,7 +37,7 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void handleInsufficientInventory_returns409WithErrorResponse() {
+    void handleInsufficientInventoryReturns409WithErrorResponse() {
         InsufficientInventoryException ex = new InsufficientInventoryException("Not enough inventory for SKU-001");
 
         ResponseEntity<GlobalExceptionHandler.ErrorResponse> response = handler.handleInsufficientInventory(ex);
@@ -50,7 +50,7 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void handleIllegalArgument_returns400WithErrorResponse() {
+    void handleIllegalArgumentReturns400WithErrorResponse() {
         IllegalArgumentException ex = new IllegalArgumentException("Invalid argument provided");
 
         ResponseEntity<GlobalExceptionHandler.ErrorResponse> response = handler.handleIllegalArgument(ex);
@@ -63,7 +63,7 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void handleValidation_returns400WithFieldErrors() {
+    void handleValidationReturns400WithFieldErrors() {
         Object target = new Object();
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(target, "target");
         bindingResult.addError(new FieldError("target", "name", "Name is required"));
@@ -80,7 +80,7 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void handleGeneric_returns500WithErrorResponse() {
+    void handleGenericReturns500WithErrorResponse() {
         Exception ex = new RuntimeException("Unexpected error occurred");
 
         ResponseEntity<GlobalExceptionHandler.ErrorResponse> response = handler.handleGeneric(ex);

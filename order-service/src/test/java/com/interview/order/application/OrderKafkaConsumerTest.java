@@ -49,7 +49,7 @@ class OrderKafkaConsumerTest {
     }
 
     @Test
-    void onEvent_paymentDeducted_shouldDelegateAndAck() throws Exception {
+    void onEventPaymentDeductedShouldDelegateAndAck() throws Exception {
         String payload = buildEvent("PaymentDeducted", "saga-1", "order-1");
 
         consumer.onEvent(payload, "user-account.events", "key-1", acknowledgment);
@@ -60,7 +60,7 @@ class OrderKafkaConsumerTest {
     }
 
     @Test
-    void onEvent_paymentDeductFailed_shouldDelegate() throws Exception {
+    void onEventPaymentDeductFailedShouldDelegate() throws Exception {
         String payload = buildEvent("PaymentDeductFailed", "saga-2", "order-2");
 
         consumer.onEvent(payload, "user-account.events", "key-1", acknowledgment);
@@ -70,7 +70,7 @@ class OrderKafkaConsumerTest {
     }
 
     @Test
-    void onEvent_inventoryReserved_shouldDelegate() throws Exception {
+    void onEventInventoryReservedShouldDelegate() throws Exception {
         String payload = buildEvent("InventoryReserved", "saga-3", "order-3");
 
         consumer.onEvent(payload, "merchant.events", "key-1", acknowledgment);
@@ -80,7 +80,7 @@ class OrderKafkaConsumerTest {
     }
 
     @Test
-    void onEvent_inventoryReserveFailed_shouldDelegate() throws Exception {
+    void onEventInventoryReserveFailedShouldDelegate() throws Exception {
         String payload = buildEvent("InventoryReserveFailed", "saga-4", "order-4");
 
         consumer.onEvent(payload, "merchant.events", "key-1", acknowledgment);
@@ -90,7 +90,7 @@ class OrderKafkaConsumerTest {
     }
 
     @Test
-    void onEvent_merchantCredited_shouldDelegate() throws Exception {
+    void onEventMerchantCreditedShouldDelegate() throws Exception {
         String payload = buildEvent("MerchantCredited", "saga-5", "order-5");
 
         consumer.onEvent(payload, "merchant.events", "key-1", acknowledgment);
@@ -100,7 +100,7 @@ class OrderKafkaConsumerTest {
     }
 
     @Test
-    void onEvent_merchantCreditFailed_shouldDelegate() throws Exception {
+    void onEventMerchantCreditFailedShouldDelegate() throws Exception {
         String payload = buildEvent("MerchantCreditFailed", "saga-6", "order-6");
 
         consumer.onEvent(payload, "merchant.events", "key-1", acknowledgment);
@@ -110,7 +110,7 @@ class OrderKafkaConsumerTest {
     }
 
     @Test
-    void onEvent_unknownEventType_shouldNotDelegate() throws Exception {
+    void onEventUnknownEventTypeShouldNotDelegate() throws Exception {
         String payload = buildEvent("UnknownEvent", "saga-7", "order-7");
 
         consumer.onEvent(payload, "merchant.events", "key-1", acknowledgment);
@@ -120,7 +120,7 @@ class OrderKafkaConsumerTest {
     }
 
     @Test
-    void onEvent_blankSagaId_shouldIgnoreAndAck() throws Exception {
+    void onEventBlankSagaIdShouldIgnoreAndAck() throws Exception {
         String payload = buildEvent("PaymentDeducted", "", "order-1");
 
         consumer.onEvent(payload, "user-account.events", "key-1", acknowledgment);
@@ -130,7 +130,7 @@ class OrderKafkaConsumerTest {
     }
 
     @Test
-    void onEvent_invalidJson_shouldNotThrowButNotAck() {
+    void onEventInvalidJsonShouldNotThrowButNotAck() {
         String payload = "not-valid-json";
 
         consumer.onEvent(payload, "user-account.events", "key-1", acknowledgment);
@@ -140,7 +140,7 @@ class OrderKafkaConsumerTest {
     }
 
     @Test
-    void onEvent_exceptionFromOrchestrator_shouldNotThrowButNotAck() throws Exception {
+    void onEventExceptionFromOrchestratorShouldNotThrowButNotAck() throws Exception {
         String payload = buildEvent("PaymentDeducted", "saga-1", "order-1");
 
         doThrow(new RuntimeException("orchestrator error"))
@@ -152,7 +152,7 @@ class OrderKafkaConsumerTest {
     }
 
     @Test
-    void onEvent_duplicateEvent_shouldSkipAndAck() throws Exception {
+    void onEventDuplicateEventShouldSkipAndAck() throws Exception {
         String payload = buildEvent("PaymentDeducted", "saga-dup", "order-dup");
         when(processedSagaMessageRepository.existsByCommandId("cmd-saga-dup")).thenReturn(true);
 

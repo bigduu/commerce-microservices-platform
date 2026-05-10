@@ -59,7 +59,7 @@ class UserKafkaConsumerTest {
     }
 
     @Test
-    void handleCommand_deductPaymentCommand_shouldDeductPaymentCorrelateEventAndAcknowledge() throws Exception {
+    void handleCommandDeductPaymentCommandShouldDeductPaymentCorrelateEventAndAcknowledge() throws Exception {
         String userId = "user-1";
         String orderId = "order-1";
         BigDecimal amount = new BigDecimal("50.00");
@@ -94,7 +94,7 @@ class UserKafkaConsumerTest {
     }
 
     @Test
-    void handleCommand_refundPaymentCommand_shouldRefundCorrelateEventAndAcknowledge() throws Exception {
+    void handleCommandRefundPaymentCommandShouldRefundCorrelateEventAndAcknowledge() throws Exception {
         String userId = "user-1";
         String orderId = "order-1";
         BigDecimal amount = new BigDecimal("25.00");
@@ -129,7 +129,7 @@ class UserKafkaConsumerTest {
     }
 
     @Test
-    void handleCommand_insufficientBalance_shouldPublishFailureEventAndAcknowledge() throws Exception {
+    void handleCommandInsufficientBalanceShouldPublishFailureEventAndAcknowledge() throws Exception {
         String userId = "user-1";
         String orderId = "order-1";
         BigDecimal amount = new BigDecimal("50.00");
@@ -165,7 +165,7 @@ class UserKafkaConsumerTest {
     }
 
     @Test
-    void handleCommand_unknownCommandType_shouldWarnAndAcknowledge() throws Exception {
+    void handleCommandUnknownCommandTypeShouldWarnAndAcknowledge() throws Exception {
         String message = serializeCommand(
                 "cmd-4",
                 "saga-4",
@@ -184,7 +184,7 @@ class UserKafkaConsumerTest {
     }
 
     @Test
-    void handleCommand_invalidJson_shouldNotAcknowledge() {
+    void handleCommandInvalidJsonShouldNotAcknowledge() {
         String message = "not-valid-json";
 
         userKafkaConsumer.handleCommand(message, acknowledgment);
@@ -196,7 +196,7 @@ class UserKafkaConsumerTest {
     }
 
     @Test
-    void handleCommand_duplicateCommand_shouldSkipAndAcknowledge() throws Exception {
+    void handleCommandDuplicateCommandShouldSkipAndAcknowledge() throws Exception {
         String message = serializeCommand(
                 "cmd-dup",
                 "saga-dup",
@@ -217,7 +217,7 @@ class UserKafkaConsumerTest {
     }
 
     @Test
-    void handleCommand_serviceException_shouldNotAcknowledge() throws Exception {
+    void handleCommandServiceExceptionShouldNotAcknowledge() throws Exception {
         String userId = "user-1";
         String orderId = "order-1";
         BigDecimal amount = new BigDecimal("50.00");
@@ -241,7 +241,7 @@ class UserKafkaConsumerTest {
     }
 
     @Test
-    void handleCommand_blankCommandType_shouldAcknowledge() throws Exception {
+    void handleCommandBlankCommandTypeShouldAcknowledge() throws Exception {
         String message = serializeCommand(
                 "cmd-blank",
                 "saga-blank",
@@ -258,7 +258,7 @@ class UserKafkaConsumerTest {
     }
 
     @Test
-    void handleCommand_nullCommandType_shouldAcknowledge() throws Exception {
+    void handleCommandNullCommandTypeShouldAcknowledge() throws Exception {
         String message = serializeCommand(
                 "cmd-null",
                 "saga-null",

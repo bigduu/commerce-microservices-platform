@@ -28,7 +28,7 @@ class UserAccountServiceTest {
     private UserAccountService userAccountService;
 
     @Test
-    void createUser_shouldCreateAndSaveUserAccount() {
+    void createUserShouldCreateAndSaveUserAccount() {
         String userId = "user-1";
         String username = "alice";
 
@@ -44,7 +44,7 @@ class UserAccountServiceTest {
     }
 
     @Test
-    void createUser_whenUserAlreadyExists_shouldThrowIllegalArgumentException() {
+    void createUserWhenUserAlreadyExistsShouldThrowIllegalArgumentException() {
         String userId = "user-1";
         String username = "alice";
 
@@ -58,7 +58,7 @@ class UserAccountServiceTest {
     }
 
     @Test
-    void topUp_shouldLoadAccountCallTopUpAndSave() {
+    void topUpShouldLoadAccountCallTopUpAndSave() {
         String userId = "user-1";
         BigDecimal amount = new BigDecimal("50.00");
         UserAccount account = UserAccount.create(userId, "alice");
@@ -73,7 +73,7 @@ class UserAccountServiceTest {
     }
 
     @Test
-    void deductPayment_shouldLoadAccountCallDeductPaymentAndSave() {
+    void deductPaymentShouldLoadAccountCallDeductPaymentAndSave() {
         String userId = "user-1";
         String orderId = "order-1";
         BigDecimal amount = new BigDecimal("30.00");
@@ -90,7 +90,7 @@ class UserAccountServiceTest {
     }
 
     @Test
-    void getUser_shouldReturnUserAccount() {
+    void getUserShouldReturnUserAccount() {
         String userId = "user-1";
         UserAccount account = UserAccount.create(userId, "alice");
 
@@ -104,7 +104,7 @@ class UserAccountServiceTest {
     }
 
     @Test
-    void getBalance_shouldReturnAccountBalance() {
+    void getBalanceShouldReturnAccountBalance() {
         String userId = "user-1";
         UserAccount account = UserAccount.create(userId, "alice");
         account.topUp(Money.of(100.00));

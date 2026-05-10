@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class MerchantAccountTest {
 
     @Test
-    void constructor_shouldSetFieldsAndBalanceDefaultsToZero() {
+    void constructorShouldSetFieldsAndBalanceDefaultsToZero() {
         MerchantAccount account = new MerchantAccount("M001", "Acme Corp");
 
         assertEquals("M001", account.getMerchantId());
@@ -18,7 +18,7 @@ class MerchantAccountTest {
     }
 
     @Test
-    void credit_shouldIncreaseBalance() {
+    void creditShouldIncreaseBalance() {
         MerchantAccount account = new MerchantAccount("M002", "Test Merchant");
 
         account.credit(new BigDecimal("100.00"));
@@ -27,7 +27,7 @@ class MerchantAccountTest {
     }
 
     @Test
-    void credit_withMultipleAmounts_shouldAccumulate() {
+    void creditWithMultipleAmountsShouldAccumulate() {
         MerchantAccount account = new MerchantAccount("M003", "Test Merchant");
 
         account.credit(new BigDecimal("50.00"));
@@ -37,7 +37,7 @@ class MerchantAccountTest {
     }
 
     @Test
-    void debit_shouldDecreaseBalance() {
+    void debitShouldDecreaseBalance() {
         MerchantAccount account = new MerchantAccount("M004", "Test Merchant");
         account.credit(new BigDecimal("200.00"));
 
@@ -47,7 +47,7 @@ class MerchantAccountTest {
     }
 
     @Test
-    void debit_withMultipleAmounts_shouldAccumulate() {
+    void debitWithMultipleAmountsShouldAccumulate() {
         MerchantAccount account = new MerchantAccount("M005", "Test Merchant");
         account.credit(new BigDecimal("500.00"));
 
@@ -58,7 +58,7 @@ class MerchantAccountTest {
     }
 
     @Test
-    void creditAndDebit_combined_shouldResultInCorrectBalance() {
+    void creditAndDebitCombinedShouldResultInCorrectBalance() {
         MerchantAccount account = new MerchantAccount("M006", "Test Merchant");
 
         account.credit(new BigDecimal("1000.00"));
@@ -70,7 +70,7 @@ class MerchantAccountTest {
     }
 
     @Test
-    void debit_toZero_shouldResultInZeroBalance() {
+    void debitToZeroShouldResultInZeroBalance() {
         MerchantAccount account = new MerchantAccount("M007", "Test Merchant");
         account.credit(new BigDecimal("100.00"));
 
@@ -80,7 +80,7 @@ class MerchantAccountTest {
     }
 
     @Test
-    void debit_moreThanBalance_shouldResultInNegativeBalance() {
+    void debitMoreThanBalanceShouldResultInNegativeBalance() {
         MerchantAccount account = new MerchantAccount("M008", "Test Merchant");
         account.credit(new BigDecimal("100.00"));
 
@@ -90,7 +90,7 @@ class MerchantAccountTest {
     }
 
     @Test
-    void getVersion_shouldReturnNullForNewAccount() {
+    void getVersionShouldReturnNullForNewAccount() {
         MerchantAccount account = new MerchantAccount("M009", "Test Merchant");
 
         assertNull(account.getVersion());

@@ -46,7 +46,7 @@ class OrderServiceTest {
     private static final BigDecimal UNIT_PRICE = new BigDecimal("10.00");
 
     @Test
-    void createOrder_shouldCreateOrder_andStartSaga() {
+    void createOrderShouldCreateOrderAndStartSaga() {
         when(merchantProductClient.getUnitPrice(MERCHANT_ID, SKU)).thenReturn(UNIT_PRICE);
         when(orderRepository.save(any(Order.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -73,21 +73,21 @@ class OrderServiceTest {
     }
 
     @Test
-    void createOrder_shouldThrow_whenQuantityIsZero() {
+    void createOrderShouldThrowWhenQuantityIsZero() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> orderService.createOrder(USER_ID, MERCHANT_ID, SKU, 0));
         assertEquals("Quantity must be positive", exception.getMessage());
     }
 
     @Test
-    void createOrder_shouldThrow_whenQuantityIsNegative() {
+    void createOrderShouldThrowWhenQuantityIsNegative() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> orderService.createOrder(USER_ID, MERCHANT_ID, SKU, -1));
         assertEquals("Quantity must be positive", exception.getMessage());
     }
 
     @Test
-    void createOrder_shouldThrow_whenResolvedUnitPriceIsNull() {
+    void createOrderShouldThrowWhenResolvedUnitPriceIsNull() {
         when(merchantProductClient.getUnitPrice(MERCHANT_ID, SKU)).thenReturn(null);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
@@ -96,7 +96,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void createOrder_shouldThrow_whenResolvedUnitPriceIsZero() {
+    void createOrderShouldThrowWhenResolvedUnitPriceIsZero() {
         when(merchantProductClient.getUnitPrice(MERCHANT_ID, SKU)).thenReturn(BigDecimal.ZERO);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
@@ -105,7 +105,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void createOrder_shouldThrow_whenResolvedUnitPriceIsNegative() {
+    void createOrderShouldThrowWhenResolvedUnitPriceIsNegative() {
         when(merchantProductClient.getUnitPrice(MERCHANT_ID, SKU)).thenReturn(new BigDecimal("-1.00"));
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
@@ -114,7 +114,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void getOrder_shouldReturnOrder_whenFound() {
+    void getOrderShouldReturnOrderWhenFound() {
         String orderId = "order-1";
         Order order = new Order(orderId, USER_ID, MERCHANT_ID, SKU, QUANTITY, UNIT_PRICE);
         when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
@@ -127,7 +127,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void getOrder_shouldThrow_whenNotFound() {
+    void getOrderShouldThrowWhenNotFound() {
         String orderId = "order-not-found";
         when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
 
@@ -137,7 +137,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void getOrdersByUser_shouldReturnListOfOrders() {
+    void getOrdersByUserShouldReturnListOfOrders() {
         Order order1 = new Order("order-1", USER_ID, MERCHANT_ID, SKU, 1, BigDecimal.TEN);
         Order order2 = new Order("order-2", USER_ID, MERCHANT_ID, "SKU-002", 2, new BigDecimal("5.00"));
         List<Order> expectedOrders = List.of(order1, order2);
@@ -153,7 +153,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void getOrdersByUser_shouldReturnEmptyList_whenNoOrders() {
+    void getOrdersByUserShouldReturnEmptyListWhenNoOrders() {
         when(orderRepository.findByUserId(USER_ID)).thenReturn(List.of());
 
         List<Order> result = orderService.getOrdersByUser(USER_ID);
@@ -163,7 +163,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void createOrder_shouldGenerateUniqueOrderIds() {
+    void createOrderShouldGenerateUniqueOrderIds() {
         when(merchantProductClient.getUnitPrice(MERCHANT_ID, SKU)).thenReturn(BigDecimal.TEN);
         when(orderRepository.save(any(Order.class))).thenAnswer(inv -> inv.getArgument(0));
 
