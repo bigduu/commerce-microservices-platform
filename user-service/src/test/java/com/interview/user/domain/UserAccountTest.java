@@ -23,7 +23,9 @@ class UserAccountTest {
 
         List<DomainEvent> events = account.getPendingEvents();
         assertEquals(1, events.size());
-        assertTrue(events.get(0) instanceof UserAccountEvents.AccountCreated);
+        UserAccountEvents.AccountCreated event = (UserAccountEvents.AccountCreated) events.get(0);
+        assertEquals("user-1", event.getUserId());
+        assertEquals("alice", event.getUsername());
     }
 
     @Test
@@ -36,7 +38,9 @@ class UserAccountTest {
         assertEquals(Money.of(100.00), account.getBalance());
         List<DomainEvent> events = account.getPendingEvents();
         assertEquals(1, events.size());
-        assertTrue(events.get(0) instanceof UserAccountEvents.AccountToppedUp);
+        UserAccountEvents.AccountToppedUp event = (UserAccountEvents.AccountToppedUp) events.get(0);
+        assertEquals("user-1", event.getUserId());
+        assertEquals(0, new BigDecimal("100.00").compareTo(event.getAmount()));
     }
 
     @Test
@@ -56,7 +60,10 @@ class UserAccountTest {
         assertEquals(Money.of(70.00), account.getBalance());
         List<DomainEvent> events = account.getPendingEvents();
         assertEquals(1, events.size());
-        assertTrue(events.get(0) instanceof UserAccountEvents.PaymentDeducted);
+        UserAccountEvents.PaymentDeducted event = (UserAccountEvents.PaymentDeducted) events.get(0);
+        assertEquals("user-1", event.getUserId());
+        assertEquals("order-1", event.getOrderId());
+        assertEquals(0, new BigDecimal("30.00").compareTo(event.getAmount()));
     }
 
     @Test
@@ -81,7 +88,10 @@ class UserAccountTest {
         assertEquals(Money.of(100.00), account.getBalance());
         List<DomainEvent> events = account.getPendingEvents();
         assertEquals(1, events.size());
-        assertTrue(events.get(0) instanceof UserAccountEvents.PaymentRefunded);
+        UserAccountEvents.PaymentRefunded event = (UserAccountEvents.PaymentRefunded) events.get(0);
+        assertEquals("user-1", event.getUserId());
+        assertEquals("order-1", event.getOrderId());
+        assertEquals(0, new BigDecimal("30.00").compareTo(event.getAmount()));
     }
 
     @Test
@@ -154,5 +164,46 @@ class UserAccountTest {
 
         UserAccount account = new UserAccount();
         assertThrows(IllegalArgumentException.class, () -> account.loadFromEvents(events));
+    }
+
+    @Test
+    void paymentRefundFailedEvent_shouldHaveAllFields() {
+        UserAccountEvents.PaymentRefundFailed event = new UserAccountEvents.PaymentRefundFailed(
+                "user-1", "order-1", new BigDecimal("50.00"));
+
+        assertEquals("user-1", event.getUserId());
+        assertEquals("order-1", event.getOrderId());
+        assertEquals(0, new BigDecimal("50.00").compareTo(event.getAmount()));
+        assertEquals("UserAccount", event.getAggregateType());
+    }
+
+    @Test
+    void paymentDeductFailedEvent_shouldHaveAllFields() {
+        UserAccountEvents.PaymentDeductFailed event = new UserAccountEvents.PaymentDeductFailed(
+                "user-1", "order-1", new BigDecimal("100.00"));
+        event.fail("INSUFFICIENT_BALANCE", "Not enough");
+
+        assertEquals("user-1", event.getUserId());
+        assertEquals("order-1", event.getOrderId());
+        assertEquals(0, new BigDecimal("100.00").compareTo(event.getAmount()));
+        assertEquals("UserAccount", event.getAggregateType());
+        assertEquals("INSUFFICIENT_BALANCE", event.getFailureCode());
+        assertEquals("Not enough", event.getFailureReason());
+    }
+
+    @Test
+    void noArgConstructorsShouldBeInstantiable() throws Exception {
+        assertNotNull(callProtectedNoArgCtor(UserAccountEvents.AccountCreated.class));
+        assertNotNull(callProtectedNoArgCtor(UserAccountEvents.AccountToppedUp.class));
+        assertNotNull(callProtectedNoArgCtor(UserAccountEvents.PaymentDeducted.class));
+        assertNotNull(callProtectedNoArgCtor(UserAccountEvents.PaymentRefunded.class));
+        assertNotNull(callProtectedNoArgCtor(UserAccountEvents.PaymentDeductFailed.class));
+        assertNotNull(callProtectedNoArgCtor(UserAccountEvents.PaymentRefundFailed.class));
+    }
+
+    private <T> T callProtectedNoArgCtor(Class<T> clazz) throws Exception {
+        var ctor = clazz.getDeclaredConstructor();
+        ctor.setAccessible(true);
+        return ctor.newInstance();
     }
 }

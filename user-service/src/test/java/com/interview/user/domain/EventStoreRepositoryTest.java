@@ -144,6 +144,91 @@ class EventStoreRepositoryTest {
     }
 
     @Test
+    void eventRowMapper_shouldMapAccountToppedUpEvent() throws Exception {
+        ResultSet rs = mock(ResultSet.class);
+        Instant now = Instant.now();
+        UserAccountEvents.AccountToppedUp realEvent = new UserAccountEvents.AccountToppedUp("user-1", new BigDecimal("50.00"));
+        realEvent.setVersion(2L);
+        realEvent.setOccurredAt(now);
+        String eventData = com.interview.common.event.EventJsonMapper.toJson(realEvent);
+
+        when(rs.getString("event_type")).thenReturn("AccountToppedUp");
+        when(rs.getString("event_data")).thenReturn(eventData);
+        when(rs.getString("aggregate_id")).thenReturn("user-1");
+        when(rs.getString("aggregate_type")).thenReturn("UserAccount");
+        when(rs.getLong("version")).thenReturn(2L);
+        when(rs.getTimestamp("created_at")).thenReturn(Timestamp.from(now));
+
+        when(jdbcTemplate.query(anyString(), any(RowMapper.class), eq("user-1")))
+                .thenAnswer(invocation -> {
+                    RowMapper<DomainEvent> rowMapper = invocation.getArgument(1);
+                    return List.of(rowMapper.mapRow(rs, 0));
+                });
+
+        List<DomainEvent> result = eventStoreRepository.loadEvents("user-1");
+        assertEquals(1, result.size());
+        assertEquals("AccountToppedUp", result.get(0).getEventType());
+        assertEquals(2L, result.get(0).getVersion());
+    }
+
+    @Test
+    void eventRowMapper_shouldMapPaymentDeductedAndRefundedEvents() throws Exception {
+        ResultSet rs1 = mock(ResultSet.class);
+        Instant now = Instant.now();
+        UserAccountEvents.PaymentDeducted deducted = new UserAccountEvents.PaymentDeducted("user-1", "order-1", new BigDecimal("30.00"));
+        deducted.setVersion(3L);
+        deducted.setOccurredAt(now);
+        String json1 = com.interview.common.event.EventJsonMapper.toJson(deducted);
+
+        when(rs1.getString("event_type")).thenReturn("PaymentDeducted");
+        when(rs1.getString("event_data")).thenReturn(json1);
+        when(rs1.getString("aggregate_id")).thenReturn("user-1");
+        when(rs1.getString("aggregate_type")).thenReturn("UserAccount");
+        when(rs1.getLong("version")).thenReturn(3L);
+        when(rs1.getTimestamp("created_at")).thenReturn(Timestamp.from(now));
+
+        when(jdbcTemplate.query(anyString(), any(RowMapper.class), eq("user-1")))
+                .thenAnswer(invocation -> {
+                    RowMapper<DomainEvent> rowMapper = invocation.getArgument(1);
+                    return List.of(rowMapper.mapRow(rs1, 0));
+                });
+
+        List<DomainEvent> result = eventStoreRepository.loadEvents("user-1");
+        assertEquals(1, result.size());
+        assertEquals("PaymentDeducted", result.get(0).getEventType());
+        assertEquals(3L, result.get(0).getVersion());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void eventRowMapper_shouldMapPaymentRefundFailedEvent() throws Exception {
+        ResultSet rs = mock(ResultSet.class);
+        Instant now = Instant.now();
+        UserAccountEvents.PaymentRefundFailed realEvent = new UserAccountEvents.PaymentRefundFailed("user-1", "order-1", new BigDecimal("50.00"));
+        realEvent.setVersion(4L);
+        realEvent.setOccurredAt(now);
+        String eventData = com.interview.common.event.EventJsonMapper.toJson(realEvent);
+
+        when(rs.getString("event_type")).thenReturn("PaymentRefundFailed");
+        when(rs.getString("event_data")).thenReturn(eventData);
+        when(rs.getString("aggregate_id")).thenReturn("user-1");
+        when(rs.getString("aggregate_type")).thenReturn("UserAccount");
+        when(rs.getLong("version")).thenReturn(4L);
+        when(rs.getTimestamp("created_at")).thenReturn(Timestamp.from(now));
+
+        when(jdbcTemplate.query(anyString(), any(RowMapper.class), eq("user-1")))
+                .thenAnswer(invocation -> {
+                    RowMapper<DomainEvent> rowMapper = invocation.getArgument(1);
+                    return List.of(rowMapper.mapRow(rs, 0));
+                });
+
+        List<DomainEvent> result = eventStoreRepository.loadEvents("user-1");
+        assertEquals(1, result.size());
+        assertEquals("PaymentRefundFailed", result.get(0).getEventType());
+        assertEquals(4L, result.get(0).getVersion());
+    }
+
+    @Test
     void eventRowMapper_shouldThrowForUnknownEventType() throws Exception {
         ResultSet rs = mock(ResultSet.class);
         String eventData = "{}";

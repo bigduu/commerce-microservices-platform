@@ -141,4 +141,46 @@ class RestMerchantProductClientTest {
                 () -> client.getUnitPrice("M001", "SKU-001"));
         assertTrue(ex.getMessage().contains("Resolved product price must be positive"));
     }
+
+    @Test
+    void getUnitPrice_shouldUseCacheOnSecondCall() throws Exception {
+        String json = objectMapper.writeValueAsString(java.util.Map.of(
+                "sku", "SKU-CACHE",
+                "merchantId", "M001",
+                "name", "CachedWidget",
+                "price", 10.00,
+                "quantity", 5
+        ));
+
+        java.util.concurrent.atomic.AtomicInteger callCount = new java.util.concurrent.atomic.AtomicInteger(0);
+        server.createContext("/api/v1/merchants/M001/products/SKU-CACHE", exchange -> {
+            callCount.incrementAndGet();
+            exchange.getResponseHeaders().set("Content-Type", "application/json");
+            byte[] response = json.getBytes();
+            exchange.sendResponseHeaders(200, response.length);
+            try (OutputStream os = exchange.getResponseBody()) {
+                os.write(response);
+            }
+        });
+
+        BigDecimal price1 = client.getUnitPrice("M001", "SKU-CACHE");
+        assertEquals(0, new BigDecimal("10.00").compareTo(price1));
+
+        BigDecimal price2 = client.getUnitPrice("M001", "SKU-CACHE");
+        assertEquals(0, new BigDecimal("10.00").compareTo(price2));
+
+        assertEquals(1, callCount.get());
+    }
+
+    @Test
+    void getUnitPrice_shouldThrow_whenServerReturns500() {
+        server.createContext("/api/v1/merchants/M001/products/SKU-500", exchange -> {
+            exchange.sendResponseHeaders(500, -1);
+            exchange.close();
+        });
+
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+                () -> client.getUnitPrice("M001", "SKU-500"));
+        assertTrue(ex.getMessage().contains("Unable to resolve product price"));
+    }
 }

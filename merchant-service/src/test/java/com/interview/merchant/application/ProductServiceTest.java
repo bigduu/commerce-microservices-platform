@@ -157,6 +157,19 @@ class ProductServiceTest {
     }
 
     @Test
+    void addInventory_whenUpdateReturnsZero_shouldThrowAggregateNotFoundException() {
+        Product product = Product.create("SKU-005", "M005", "Inventory Product", new BigDecimal("19.99"), 100);
+        when(productRepository.findBySku("SKU-005")).thenReturn(Optional.of(product));
+        when(productRepository.addInventory("SKU-005", 10)).thenReturn(0);
+
+        AggregateNotFoundException exception = assertThrows(
+                AggregateNotFoundException.class,
+                () -> productService.addInventory("M005", "SKU-005", 10)
+        );
+        assertEquals("Aggregate not found: SKU-005", exception.getMessage());
+    }
+
+    @Test
     void releaseInventory_shouldCallRepositoryAddInventory() {
         when(productRepository.addInventory("SKU-007", 3)).thenReturn(1);
 
