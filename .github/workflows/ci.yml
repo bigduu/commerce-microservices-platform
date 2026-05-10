@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  unit-test:
+    name: Unit & Integration Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build & test all services
+        run: |
+          ./mvnw clean test \
+            -pl common,user-service,merchant-service,order-service,settlement-service \
+            -am \
+            --batch-mode \
+            --no-transfer-progress
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-results
+          path: |
+            */target/surefire-reports/*.xml
+            */target/site/jacoco/index.html
+          retention-days: 7
+
+  e2e-test:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: unit-test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build common module first
+        run: ./mvnw compile -pl common --batch-mode --no-transfer-progress
+
+      - name: Run E2E tests with Testcontainers
+        run: |
+          ./mvnw test \
+            -pl e2e-tests \
+            -am \
+            --batch-mode \
+            --no-transfer-progress
+        env:
+          TESTCONTAINERS_RYUK_DISABLED: 'true'
+          TESTCONTAINERS_REUSE_ENABLE: 'true'
+
+      - name: Upload E2E test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-test-results
+          path: e2e-tests/target/surefire-reports/*.xml
+          retention-days: 7
