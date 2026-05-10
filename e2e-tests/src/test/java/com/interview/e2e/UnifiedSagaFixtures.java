@@ -146,6 +146,102 @@ final class UnifiedSagaFixtures {
         }
     }
 
+    static class InventoryReserveFailed extends DomainEvent {
+        private String sku;
+        private int quantity;
+
+        protected InventoryReserveFailed() {
+            super();
+        }
+
+        InventoryReserveFailed(String orderId, String sku, int quantity) {
+            super(orderId, "Product");
+            this.sku = sku;
+            this.quantity = quantity;
+            setOrderId(orderId);
+        }
+
+        public String getSku() {
+            return sku;
+        }
+
+        public void setSku(String sku) {
+            this.sku = sku;
+        }
+
+        public int getQuantity() {
+            return quantity;
+        }
+
+        public void setQuantity(int quantity) {
+            this.quantity = quantity;
+        }
+    }
+
+    static class InventoryReleased extends DomainEvent {
+        private String sku;
+        private int quantity;
+
+        protected InventoryReleased() {
+            super();
+        }
+
+        InventoryReleased(String orderId, String sku, int quantity) {
+            super(orderId, "Product");
+            this.sku = sku;
+            this.quantity = quantity;
+            setOrderId(orderId);
+        }
+
+        public String getSku() {
+            return sku;
+        }
+
+        public void setSku(String sku) {
+            this.sku = sku;
+        }
+
+        public int getQuantity() {
+            return quantity;
+        }
+
+        public void setQuantity(int quantity) {
+            this.quantity = quantity;
+        }
+    }
+
+    static class PaymentDeductFailed extends DomainEvent {
+        private String userId;
+        private BigDecimal amount;
+
+        protected PaymentDeductFailed() {
+            super();
+        }
+
+        PaymentDeductFailed(String userId, String orderId, BigDecimal amount) {
+            super(userId, "UserAccount");
+            this.userId = userId;
+            this.amount = amount;
+            setOrderId(orderId);
+        }
+
+        public String getUserId() {
+            return userId;
+        }
+
+        public void setUserId(String userId) {
+            this.userId = userId;
+        }
+
+        public BigDecimal getAmount() {
+            return amount;
+        }
+
+        public void setAmount(BigDecimal amount) {
+            this.amount = amount;
+        }
+    }
+
     static class MerchantCredited extends DomainEvent {
         private String merchantId;
         private BigDecimal amount;
