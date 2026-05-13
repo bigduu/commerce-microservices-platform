@@ -17,12 +17,14 @@ import io.micrometer.tracing.Span;
 import io.micrometer.tracing.Tracer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -35,23 +37,43 @@ public class SagaOrchestrator {
     private final OrderRepository orderRepository;
     private final OutboxRepository outboxRepository;
     private final ObjectMapper objectMapper;
-    private final Tracer tracer;
+    private final Optional<Tracer> tracer;
 
     public SagaOrchestrator(SagaInstanceRepository sagaInstanceRepository,
                             OrderRepository orderRepository,
                             OutboxRepository outboxRepository,
                             ObjectMapper objectMapper,
-                            Tracer tracer) {
+                            @Autowired(required = false) Tracer tracer) {
         this.sagaInstanceRepository = sagaInstanceRepository;
         this.orderRepository = orderRepository;
         this.outboxRepository = outboxRepository;
         this.objectMapper = objectMapper;
-        this.tracer = tracer;
+        this.tracer = Optional.ofNullable(tracer);
+    }
+
+    private Span startSpan(String name) {
+        if (tracer.isEmpty()) {
+            return null;
+        }
+        return tracer.get().nextSpan().name(name).start();
+    }
+
+    private void endSpan(Span span) {
+        if (span != null) {
+            span.end();
+        }
+    }
+
+    private Tracer.SpanInScope withSpan(Span span) {
+        if (span == null || tracer.isEmpty()) {
+            return null;
+        }
+        return tracer.get().withSpan(span);
     }
 
     public void startSaga(Order order) {
-        Span span = tracer.nextSpan().name("saga.start").start();
-        try (Tracer.SpanInScope ws = tracer.withSpan(span)) {
+        Span span = startSpan("saga.start");
+        try (Tracer.SpanInScope ws = withSpan(span)) {
             String sagaId = UUID.randomUUID().toString();
             SagaInstance saga = new SagaInstance(
                     sagaId,
@@ -81,13 +103,13 @@ public class SagaOrchestrator {
             sendCommand("user.commands", sagaId, command);
             logger.info("Saga {} started for order {}, sent DeductPaymentCommand", sagaId, order.getOrderId());
         } finally {
-            span.end();
+            endSpan(span);
         }
     }
 
     public void handlePaymentDeducted(String sagaId, String orderId) {
-        Span span = tracer.nextSpan().name("saga.payment.deducted").start();
-        try (Tracer.SpanInScope ws = tracer.withSpan(span)) {
+        Span span = startSpan("saga.payment.deducted");
+        try (Tracer.SpanInScope ws = withSpan(span)) {
             SagaInstance saga = getSagaOrThrow(sagaId);
             Order order = getOrderOrThrow(orderId);
 
@@ -118,7 +140,7 @@ public class SagaOrchestrator {
             sendCommand("merchant.commands", sagaId, command);
             logger.info("Saga {} payment deducted, sent ReserveInventoryCommand for order {}", sagaId, orderId);
         } finally {
-            span.end();
+            endSpan(span);
         }
     }
 
@@ -136,8 +158,8 @@ public class SagaOrchestrator {
     }
 
     public void handleInventoryReserved(String sagaId, String orderId) {
-        Span span = tracer.nextSpan().name("saga.inventory.reserved").start();
-        try (Tracer.SpanInScope ws = tracer.withSpan(span)) {
+        Span span = startSpan("saga.inventory.reserved");
+        try (Tracer.SpanInScope ws = withSpan(span)) {
             SagaInstance saga = getSagaOrThrow(sagaId);
             Order order = getOrderOrThrow(orderId);
 
@@ -168,7 +190,7 @@ public class SagaOrchestrator {
             sendCommand("merchant.commands", sagaId, command);
             logger.info("Saga {} inventory reserved, sent CreditMerchantCommand for order {}", sagaId, orderId);
         } finally {
-            span.end();
+            endSpan(span);
         }
     }
 
@@ -199,8 +221,8 @@ public class SagaOrchestrator {
     }
 
     public void handleMerchantCredited(String sagaId, String orderId) {
-        Span span = tracer.nextSpan().name("saga.merchant.credited").start();
-        try (Tracer.SpanInScope ws = tracer.withSpan(span)) {
+        Span span = startSpan("saga.merchant.credited");
+        try (Tracer.SpanInScope ws = withSpan(span)) {
             SagaInstance saga = getSagaOrThrow(sagaId);
             Order order = getOrderOrThrow(orderId);
 
@@ -218,7 +240,7 @@ public class SagaOrchestrator {
 
             logger.info("Saga {} completed for order {}", sagaId, orderId);
         } finally {
-            span.end();
+            endSpan(span);
         }
     }
 

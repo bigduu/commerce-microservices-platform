@@ -24,7 +24,6 @@ public class RestMerchantProductClient implements MerchantProductClient {
     private final Cache<String, BigDecimal> priceCache;
 
     public RestMerchantProductClient(
-            RestClient.Builder restClientBuilder,
             @Value("${merchant-service.base-url:http://localhost:8082}") String merchantServiceBaseUrl,
             @Value("${merchant-service.connect-timeout-ms:2000}") int connectTimeoutMs,
             @Value("${merchant-service.read-timeout-ms:3000}") int readTimeoutMs,
@@ -43,7 +42,7 @@ public class RestMerchantProductClient implements MerchantProductClient {
                 .setDefaultRequestConfig(requestConfig)
                 .build();
         var requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
-        this.restClient = restClientBuilder
+        this.restClient = RestClient.builder()
                 .baseUrl(merchantServiceBaseUrl)
                 .requestFactory(requestFactory)
                 .build();
