@@ -52,10 +52,7 @@ public class SagaOrchestrator {
     }
 
     private Span startSpan(String name) {
-        if (tracer.isEmpty()) {
-            return null;
-        }
-        return tracer.get().nextSpan().name(name).start();
+        return tracer.map(value -> value.nextSpan().name(name).start()).orElse(null);
     }
 
     private void endSpan(Span span) {

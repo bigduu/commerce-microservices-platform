@@ -26,7 +26,6 @@ class RestMerchantProductClientTest {
         server.start();
         int port = server.getAddress().getPort();
         client = new RestMerchantProductClient(
-                RestClient.builder(),
                 "http://localhost:" + port,
                 2000,
                 3000,
